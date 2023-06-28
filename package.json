@@ -39,5 +39,15 @@
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
     "lodash.isequalwith": "^4.4.0"
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./setters": "./lib/setters.js",
+    "./types": "./lib/types.js",
+    "./utils": "./lib/utils.js",
+    "./timezones": "./lib/timezones/index.js",
+    "./roles": "./lib/roles/index.js",
+    "./permissions": "./lib/permissions/index.js",
+    "./currencies": "./lib/currencies/index.js"
   }
 }
