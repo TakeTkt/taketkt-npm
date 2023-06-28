@@ -3,15 +3,18 @@
   "version": "1.0.0",
   "description": "taketkt types, setters, validators, utilities, and generate functions that are used across taketkt projects",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "repository": "https://github.com/TakeTkt/taketkt-npm.git",
   "author": "Mustafa Alsihati <51824138+MustafaAlsihati@users.noreply.github.com>",
   "license": "MIT",
   "private": true,
+  "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json",
     "release": "release-it"
   },
   "devDependencies": {
+    "@types/node": "^20.3.2",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
     "eslint": "^8.43.0",
@@ -28,5 +31,13 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.16.1",
+    "@types/firebase": "^3.2.1",
+    "@types/lodash.isequalwith": "^4.4.7",
+    "date-fns": "^2.30.0",
+    "date-fns-tz": "^2.0.0",
+    "lodash.isequalwith": "^4.4.0"
   }
 }
