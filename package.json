@@ -1,0 +1,10 @@
+{
+  "name": "taketkt",
+  "version": "1.0.0",
+  "description": "taketkt types, setters, validators, utilities, and generate functions that are used across taketkt projects",
+  "main": "index.js",
+  "repository": "https://github.com/TakeTkt/taketkt-npm.git",
+  "author": "Mustafa Alsihati <51824138+MustafaAlsihati@users.noreply.github.com>",
+  "license": "MIT",
+  "private": true
+}
