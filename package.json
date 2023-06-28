@@ -2,9 +2,31 @@
   "name": "taketkt",
   "version": "1.0.0",
   "description": "taketkt types, setters, validators, utilities, and generate functions that are used across taketkt projects",
-  "main": "index.js",
+  "main": "lib/index.js",
   "repository": "https://github.com/TakeTkt/taketkt-npm.git",
   "author": "Mustafa Alsihati <51824138+MustafaAlsihati@users.noreply.github.com>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "release": "release-it"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
+    "eslint": "^8.43.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.8",
+    "release-it": "^15.11.0",
+    "typescript": "^5.1.5"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  }
 }
