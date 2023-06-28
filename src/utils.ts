@@ -92,13 +92,13 @@ export function isDeepEqual<T>(objA: T, objB: T) {
   return isEqualWith(objA, objB);
 }
 
-export function filterNestedObject(obj: object, key: string) {
+export function filterNestedObject<T extends object>(obj: T, key: keyof T) {
   for (let i in obj) {
     if (!obj.hasOwnProperty(i)) continue;
     if (i == key) {
       delete obj[key];
     } else if (typeof obj[i] == 'object') {
-      filterNestedObject(obj[i], key);
+      filterNestedObject(obj[i] as any, key);
     }
   }
   return obj;
