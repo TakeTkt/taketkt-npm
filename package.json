@@ -45,44 +45,52 @@
   },
   "exports": {
     ".": {
-      "import": "./lib/index.js",
       "require": "./lib/index.js",
-      "types": "./lib/index.d.ts"
+      "import": "./lib/index.js",
+      "types": "./lib/index.d.ts",
+      "commonjs": "./lib/index.js"
     },
     "./setters": {
-      "import": "./lib/setters.js",
       "require": "./lib/setters.js",
-      "types": "./lib/setters.d.ts"
+      "import": "./lib/setters.js",
+      "types": "./lib/setters.d.ts",
+      "commonjs": "./lib/setters.js"
     },
     "./taketkt-types": {
-      "import": "./lib/taketkt-types.js",
       "require": "./lib/taketkt-types.js",
-      "types": "./lib/taketkt-types.d.ts"
+      "import": "./lib/taketkt-types.js",
+      "types": "./lib/taketkt-types.d.ts",
+      "commonjs": "./lib/taketkt-types.js"
     },
     "./utils": {
-      "import": "./lib/utils.js",
       "require": "./lib/utils.js",
-      "types": "./lib/utils.d.ts"
+      "import": "./lib/utils.js",
+      "types": "./lib/utils.d.ts",
+      "commonjs": "./lib/utils.js"
     },
     "./timezones": {
-      "import": "./lib/timezones.js",
       "require": "./lib/timezones.js",
-      "types": "./lib/timezones.d.ts"
+      "import": "./lib/timezones.js",
+      "types": "./lib/timezones.d.ts",
+      "commonjs": "./lib/timezones.js"
     },
     "./roles": {
-      "import": "./lib/roles.js",
       "require": "./lib/roles.js",
-      "types": "./lib/roles.d.ts"
+      "import": "./lib/roles.js",
+      "types": "./lib/roles.d.ts",
+      "commonjs": "./lib/roles.js"
     },
     "./permissions": {
-      "import": "./lib/permissions.js",
       "require": "./lib/permissions.js",
-      "types": "./lib/permissions.d.ts"
+      "import": "./lib/permissions.js",
+      "types": "./lib/permissions.d.ts",
+      "commonjs": "./lib/permissions.js"
     },
     "./currencies": {
-      "import": "./lib/currencies.js",
       "require": "./lib/currencies.js",
-      "types": "./lib/currencies.d.ts"
+      "import": "./lib/currencies.js",
+      "types": "./lib/currencies.d.ts",
+      "commonjs": "./lib/currencies.js"
     }
   },
   "typesVersions": {
