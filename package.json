@@ -8,7 +8,7 @@
   "repository": "https://github.com/TakeTkt/taketkt-npm.git",
   "author": "Mustafa Alsihati <51824138+MustafaAlsihati@users.noreply.github.com>",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "type": "module",
   "scripts": {
     "clean": "rimraf lib",
