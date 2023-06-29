@@ -13,7 +13,7 @@
   "scripts": {
     "clean": "rimraf lib",
     "build": "yarn clean && tsc -p tsconfig.json",
-    "release": "release-it"
+    "release": "yarn build && release-it"
   },
   "devDependencies": {
     "@types/node": "^20.3.2",
