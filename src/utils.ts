@@ -9,7 +9,7 @@ import {
   Waiting,
   WorkingShift,
   WorkingShifts,
-} from './types';
+} from './taketkt-types';
 import set from 'date-fns/set';
 import isBefore from 'date-fns/isBefore';
 import add from 'date-fns/add';

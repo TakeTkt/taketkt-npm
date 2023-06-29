@@ -11,7 +11,7 @@ import {
   User,
   UserAccess,
   Waiting,
-} from './types';
+} from './taketkt-types';
 import { getTodaysName } from './utils';
 
 export function setNewUser(user: Partial<DashboardUser>): DashboardUser {

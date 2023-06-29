@@ -1,4 +1,4 @@
-import { Permissions as PermissionsType } from '../types';
+import { Permissions as PermissionsType } from './taketkt-types';
 
 export const PermissionsList = [
   'ACCESS_DASHBOARD_PERMISSION',

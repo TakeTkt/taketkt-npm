@@ -1,4 +1,4 @@
-import Currency from './currencies/type.js';
+import {Currency} from './currencies';
 import type { TimeZones } from './timezones';
 import type {
   Timestamp,

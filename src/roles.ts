@@ -1,4 +1,4 @@
-import { EmployeeRole } from '../types';
+import { EmployeeRole } from './taketkt-types';
 
 export default [
   {

@@ -4,13 +4,15 @@
   "description": "taketkt types, setters, validators, utilities, and generate functions that are used across taketkt projects",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "typings": "lib/index.d.ts",
   "repository": "https://github.com/TakeTkt/taketkt-npm.git",
   "author": "Mustafa Alsihati <51824138+MustafaAlsihati@users.noreply.github.com>",
   "license": "MIT",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf lib",
+    "build": "yarn clean && tsc -p tsconfig.json",
     "release": "release-it"
   },
   "devDependencies": {
@@ -38,16 +40,60 @@
     "@types/lodash.isequalwith": "^4.4.7",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
-    "lodash.isequalwith": "^4.4.0"
+    "lodash.isequalwith": "^4.4.0",
+    "rimraf": "^5.0.1"
   },
   "exports": {
-    ".": "./lib/index.js",
-    "./setters": "./lib/setters.js",
-    "./types": "./lib/types.js",
-    "./utils": "./lib/utils.js",
-    "./timezones": "./lib/timezones/index.js",
-    "./roles": "./lib/roles/index.js",
-    "./permissions": "./lib/permissions/index.js",
-    "./currencies": "./lib/currencies/index.js"
+    ".": {
+      "import": "./lib/index.js",
+      "require": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    },
+    "./setters": {
+      "import": "./lib/setters.js",
+      "require": "./lib/setters.js",
+      "types": "./lib/setters.d.ts"
+    },
+    "./taketkt-types": {
+      "import": "./lib/taketkt-types.js",
+      "require": "./lib/taketkt-types.js",
+      "types": "./lib/taketkt-types.d.ts"
+    },
+    "./utils": {
+      "import": "./lib/utils.js",
+      "require": "./lib/utils.js",
+      "types": "./lib/utils.d.ts"
+    },
+    "./timezones": {
+      "import": "./lib/timezones.js",
+      "require": "./lib/timezones.js",
+      "types": "./lib/timezones.d.ts"
+    },
+    "./roles": {
+      "import": "./lib/roles.js",
+      "require": "./lib/roles.js",
+      "types": "./lib/roles.d.ts"
+    },
+    "./permissions": {
+      "import": "./lib/permissions.js",
+      "require": "./lib/permissions.js",
+      "types": "./lib/permissions.d.ts"
+    },
+    "./currencies": {
+      "import": "./lib/currencies.js",
+      "require": "./lib/currencies.js",
+      "types": "./lib/currencies.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "setters": ["lib/setters.d.ts"],
+      "taketkt-types": ["lib/taketkt-types.d.ts"],
+      "utils": ["lib/utils.d.ts"],
+      "timezones": ["lib/timezones.d.ts"],
+      "roles": ["lib/roles.d.ts"],
+      "permissions": ["lib/permissions.d.ts"],
+      "currencies": ["lib/currencies.d.ts"]
+    }
   }
 }
