@@ -1,6 +1,6 @@
 {
   "name": "taketkt",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "taketkt types, setters, validators, utilities, and generate functions that are used across taketkt projects",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -87,13 +87,27 @@
   },
   "typesVersions": {
     "*": {
-      "setters": ["lib/setters.d.ts"],
-      "taketkt-types": ["lib/taketkt-types.d.ts"],
-      "utils": ["lib/utils.d.ts"],
-      "timezones": ["lib/timezones.d.ts"],
-      "roles": ["lib/roles.d.ts"],
-      "permissions": ["lib/permissions.d.ts"],
-      "currencies": ["lib/currencies.d.ts"]
+      "setters": [
+        "lib/setters.d.ts"
+      ],
+      "taketkt-types": [
+        "lib/taketkt-types.d.ts"
+      ],
+      "utils": [
+        "lib/utils.d.ts"
+      ],
+      "timezones": [
+        "lib/timezones.d.ts"
+      ],
+      "roles": [
+        "lib/roles.d.ts"
+      ],
+      "permissions": [
+        "lib/permissions.d.ts"
+      ],
+      "currencies": [
+        "lib/currencies.d.ts"
+      ]
     }
   }
 }
