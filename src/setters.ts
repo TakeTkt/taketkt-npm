@@ -14,7 +14,18 @@ import {
 } from './taketkt-types';
 import { getTodaysName } from './utils';
 
-export function setNewUser(user: Partial<DashboardUser>): DashboardUser {
+export function setNewUser(user: Partial<User>): User {
+  return {
+    username: '',
+    email: '',
+    country_code: '',
+    phone: '',
+    welcomeEmailSent: false,
+    ...user,
+  } as User;
+}
+
+export function setNewDashboardUser(user: Partial<DashboardUser>): DashboardUser {
   return {
     firstName: '',
     lastName: '',
