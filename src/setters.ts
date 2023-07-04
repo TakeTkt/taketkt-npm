@@ -211,6 +211,7 @@ export function setNewWaiting(
     photo: null,
     price: Number(waiting?.price ?? 0),
     currency: store?.currency ?? undefined,
+    vat_percentage: store?.vat_percentage ?? 0,
     ...waiting,
   } as Waiting;
 }
@@ -243,6 +244,7 @@ export function setNewReservation(
     photo: null,
     price: Number(reservation?.price ?? 0),
     currency: store?.currency ?? undefined,
+    vat_percentage: store?.vat_percentage ?? 0,
     ...reservation,
   } as Reservation;
 }

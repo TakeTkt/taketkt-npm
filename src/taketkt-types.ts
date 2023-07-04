@@ -237,6 +237,7 @@ export type Waiting = {
       posDisplayedId: string;
     };
   };
+  vat_percentage?: number;
 };
 
 export type Reservation = {
@@ -281,6 +282,7 @@ export type Reservation = {
       posDisplayedId: string;
     };
   };
+  vat_percentage?: number;
 };
 
 export type ReservationDay = {
