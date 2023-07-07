@@ -36,6 +36,7 @@ export type DashboardUser = {
   stores: string[];
   access?: UserAccess;
   photo?: string | null;
+  emailVerified?: boolean;
   phoneNumberVerified?: boolean;
   gender?: 'MALE' | 'FEMALE';
 };

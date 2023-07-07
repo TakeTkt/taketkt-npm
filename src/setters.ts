@@ -33,6 +33,10 @@ export function setNewDashboardUser(user: Partial<DashboardUser>): DashboardUser
     country_code: '',
     phone: '',
     stores: [],
+    access: {},
+    emailVerified: false,
+    phoneNumberVerified: false,
+    photo: null,
     ...user,
   } as DashboardUser;
 }
