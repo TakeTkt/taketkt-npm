@@ -6,19 +6,22 @@
     "declaration": true,
     "esModuleInterop": true,
     "inlineSourceMap": false,
+    "sourceMap": true,
     "lib": ["esnext"],
     "listEmittedFiles": false,
     "listFiles": false,
-    "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
     "pretty": true,
     "resolveJsonModule": true,
+    "moduleResolution": "Node",
     "rootDir": "src",
     "skipLibCheck": true,
     "strict": true,
     "traceResolution": false,
-    "types": ["node"]
+    "types": ["node"],
+    "module": "ESNext",
+    "target": "ESNext",
   },
   "include": ["src"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "exclude": ["node_modules"]
 }

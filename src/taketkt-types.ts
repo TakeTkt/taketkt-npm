@@ -479,3 +479,14 @@ export type StoreCategory = {
   name_en: string;
   name_ar: string;
 };
+
+export type FAQ = {
+  questions: {
+    faq_id: string;
+    answer_ar: string;
+    answer_en: string;
+    questions_ar?: string;
+    questions_en?: string;
+  }[];
+  active?: boolean;
+};

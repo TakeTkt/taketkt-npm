@@ -1,8 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-      "module": "esnext",
-      "outDir": "lib/mjs",
-      "target": "esnext"
-  }
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "node",
+    "declaration": true,
+    "outDir": "lib/mjs"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }
