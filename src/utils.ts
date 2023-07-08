@@ -1,6 +1,6 @@
-import format from 'date-fns/format';
-import type { GeoPoint } from 'firebase/firestore';
-import isEqualWith from 'lodash.isequalwith';
+import format from "date-fns/format";
+import type { GeoPoint } from "firebase/firestore";
+import isEqualWith from "lodash.isequalwith";
 import {
   License,
   Reservation,
@@ -9,23 +9,23 @@ import {
   Waiting,
   WorkingShift,
   WorkingShifts,
-} from './taketkt-types';
-import set from 'date-fns/set';
-import isBefore from 'date-fns/isBefore';
-import add from 'date-fns/add';
-import getDay from 'date-fns/getDay';
-import getMonth from 'date-fns/getMonth';
-import getYear from 'date-fns/getYear';
-import isWithinInterval from 'date-fns/isWithinInterval';
-import parse from 'date-fns/parse';
-import intervalToDuration from 'date-fns/intervalToDuration';
-import utcToZonedTime from 'date-fns-tz/utcToZonedTime';
-import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
+} from "./taketkt-types";
+import set from "date-fns/set";
+import isBefore from "date-fns/isBefore";
+import add from "date-fns/add";
+import getDay from "date-fns/getDay";
+import getMonth from "date-fns/getMonth";
+import getYear from "date-fns/getYear";
+import isWithinInterval from "date-fns/isWithinInterval";
+import parse from "date-fns/parse";
+import intervalToDuration from "date-fns/intervalToDuration";
+import utcToZonedTime from "date-fns-tz/utcToZonedTime";
+import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
 
 export function convertToDate(date: any) {
   if (date instanceof Date) {
     return date;
-  } else if (typeof date === 'string') {
+  } else if (typeof date === "string") {
     return new Date(date);
   } else if (date && date.seconds) {
     return new Date(date.seconds * 1000);
@@ -47,8 +47,8 @@ export function getUniqueUid() {
 }
 
 export function cleanObject(obj: any) {
-  Object.keys(obj).forEach(key => {
-    if (typeof obj[key] === 'undefined' || typeof obj[key] === null) {
+  Object.keys(obj).forEach((key) => {
+    if (typeof obj[key] === "undefined" || typeof obj[key] === null) {
       delete obj[key];
     } else if (Array.isArray(obj[key])) {
       obj[key].forEach((item: any) => {
@@ -59,7 +59,7 @@ export function cleanObject(obj: any) {
 }
 
 export function convertFromGeoPoint(
-  location?: GeoPoint & { _latitude?: number; _longitude?: number },
+  location?: GeoPoint & { _latitude?: number; _longitude?: number }
 ) {
   // This method corrects the location object
   if (location?._latitude && location?._longitude) {
@@ -79,13 +79,13 @@ export function convertFromGeoPoint(
   };
 }
 
-export function getInitials(name = '') {
+export function getInitials(name = "") {
   return name
-    .replace(/\s+/, ' ')
-    .split(' ')
+    .replace(/\s+/, " ")
+    .split(" ")
     .slice(0, 2)
-    .map(v => v && v[0].toUpperCase())
-    .join('');
+    .map((v) => v && v[0].toUpperCase())
+    .join("");
 }
 
 export function isDeepEqual<T>(objA: T, objB: T) {
@@ -97,7 +97,7 @@ export function filterNestedObject<T extends object>(obj: T, key: keyof T) {
     if (!obj.hasOwnProperty(i)) continue;
     if (i == key) {
       delete obj[key];
-    } else if (typeof obj[i] == 'object') {
+    } else if (typeof obj[i] == "object") {
       filterNestedObject(obj[i] as any, key);
     }
   }
@@ -105,7 +105,7 @@ export function filterNestedObject<T extends object>(obj: T, key: keyof T) {
 }
 
 export function getTodaysName() {
-  return format(new Date(), 'EEEE');
+  return format(new Date(), "EEEE");
 }
 
 export function isArray<T>(array: T[]): array is T[] {
@@ -126,7 +126,7 @@ export function percentOf(a: number, b: number) {
 }
 
 export function isBoolean(val: any) {
-  return typeof val === 'boolean';
+  return typeof val === "boolean";
 }
 
 export function millisToMinsAndSecs(millis: number) {
@@ -134,17 +134,17 @@ export function millisToMinsAndSecs(millis: number) {
   let seconds = Number(((millis % 60000) / 1000).toFixed(0));
   // let m = (minutes < 10 ? '0' : '') + minutes;
   let m = minutes.toString();
-  let s = (seconds < 10 ? '0' : '') + seconds;
+  let s = (seconds < 10 ? "0" : "") + seconds;
   return { minutes: m, seconds: s };
 }
 
 export function sortArrayByDate<T>(
   arr: T[],
   key: keyof T,
-  order: 'asc' | 'desc' = 'asc',
+  order: "asc" | "desc" = "asc"
 ) {
   return arr.sort((a, b) => {
-    if (order === 'desc') {
+    if (order === "desc") {
       return convertToDate(b[key]).getTime() - convertToDate(a[key]).getTime();
     }
     return convertToDate(a[key]).getTime() - convertToDate(b[key]).getTime();
@@ -152,39 +152,39 @@ export function sortArrayByDate<T>(
 }
 
 export function sortWaitings(waitings: Waiting[]) {
-  const canceled = waitings.filter(w => w.is_canceled);
-  const dones = waitings.filter(w => w.done && !w.is_canceled);
+  const canceled = waitings.filter((w) => w.is_canceled);
+  const dones = waitings.filter((w) => w.done && !w.is_canceled);
   const ready = waitings.filter(
-    w => w.is_ready && !w.done && !w.is_canceled && !w.serving_now,
+    (w) => w.is_ready && !w.done && !w.is_canceled && !w.serving_now
   );
   const serving = waitings.filter(
-    w => w.serving_now && !w.done && !w.is_canceled,
+    (w) => w.serving_now && !w.done && !w.is_canceled
   );
   const queue = sortArrayByDate(
     waitings.filter(
-      w => !w.is_canceled && !w.serving_now && !w.done && !w.is_ready,
+      (w) => !w.is_canceled && !w.serving_now && !w.done && !w.is_ready
     ),
-    'created_date',
-    'asc',
+    "created_date",
+    "asc"
   );
   return [...serving, ...ready, ...queue, ...dones, ...canceled];
 }
 
 export function sortReservations(reservations: Reservation[]) {
-  const canceled = reservations.filter(w => w.is_canceled);
-  const dones = reservations.filter(w => w.done && !w.is_canceled);
+  const canceled = reservations.filter((w) => w.is_canceled);
+  const dones = reservations.filter((w) => w.done && !w.is_canceled);
   const ready = reservations.filter(
-    w => w.is_ready && !w.done && !w.is_canceled && !w.serving_now,
+    (w) => w.is_ready && !w.done && !w.is_canceled && !w.serving_now
   );
   const serving = reservations.filter(
-    w => w.serving_now && !w.done && !w.is_canceled,
+    (w) => w.serving_now && !w.done && !w.is_canceled
   );
   const queue = sortArrayByDate(
     reservations.filter(
-      w => !w.is_canceled && !w.serving_now && !w.done && !w.is_ready,
+      (w) => !w.is_canceled && !w.serving_now && !w.done && !w.is_ready
     ),
-    'from',
-    'asc',
+    "from",
+    "asc"
   );
   return [...serving, ...ready, ...queue, ...dones, ...canceled];
 }
@@ -196,7 +196,7 @@ export function toFixed(num?: number) {
     (
       Math.round(num * Math.pow(10, decimal_places)) /
       Math.pow(10, decimal_places)
-    ).toFixed(decimal_places),
+    ).toFixed(decimal_places)
   );
 }
 
@@ -211,44 +211,44 @@ export function jsonParse<T>(str: string | null | undefined) {
 }
 
 export const WeekDays = [
-  'Sunday',
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
 ];
 
 export function isWithinShift(
   shifts: WorkingShifts | undefined,
-  timezone?: string,
+  timezone?: string
 ) {
-  let type: 'OPEN' | 'CLOSED' | 'CLOSING_SOON' = 'CLOSED';
+  let type: "OPEN" | "CLOSED" | "CLOSING_SOON" = "CLOSED";
   let now = timezone ? utcToZonedTime(new Date(), timezone) : new Date();
   let shift: WorkingShift | undefined;
 
   if (shifts && Object.keys(shifts).length) {
-    const day_name = format(now, 'EEEE');
+    const day_name = format(now, "EEEE");
     if (shifts[day_name] && shifts[day_name].length) {
-      shift = shifts[day_name].find(_shift => {
-        let start = parse(_shift.from, 'HH:mm', now);
-        let end = parse(_shift.to, 'HH:mm', now);
+      shift = shifts[day_name].find((_shift) => {
+        let start = parse(_shift.from, "HH:mm", now);
+        let end = parse(_shift.to, "HH:mm", now);
         return isWithinInterval(now, { start, end });
       });
     }
   }
 
   if (shift) {
-    type = 'OPEN';
+    type = "OPEN";
     // Check if closing soon:
-    let end = parse(shift.to, 'HH:mm', now);
+    let end = parse(shift.to, "HH:mm", now);
     let duration = intervalToDuration({
       start: now,
       end,
     });
     if (duration.hours && duration.hours < 1) {
-      type = 'CLOSING_SOON';
+      type = "CLOSING_SOON";
     }
   }
   return type;
@@ -257,8 +257,8 @@ export function isWithinShift(
 export function isWithinWaitingTimeRange(service: Service, timezone?: string) {
   if (!service || !service?.reservation_time) return true;
   const now = timezone ? utcToZonedTime(new Date(), timezone) : new Date();
-  const from = service.reservation_time.from.split(':');
-  const to = service.reservation_time.to.split(':');
+  const from = service.reservation_time.from.split(":");
+  const to = service.reservation_time.to.split(":");
   let start = set(now, {
     hours: Number(from[0]),
     minutes: Number(from[1]),
@@ -276,7 +276,7 @@ export function getReservationDayHours(
   service: Service,
   workingShifts: WorkingShifts,
   date: Date,
-  reservationDates: ReservationDay[],
+  reservationDates: ReservationDay[]
 ) {
   const now = new Date();
   const thisDay = WeekDays[date.getDay()];
@@ -284,9 +284,9 @@ export function getReservationDayHours(
   let allTimes: { from: Date; to: Date }[] = [];
 
   if (service?.duration && service?.reservation_time && workingShifts) {
-    const thisDayWorkingShift = workingShifts[thisDay].map(shift => {
-      const start = shift.from.split(':');
-      const end = shift.to.split(':');
+    const thisDayWorkingShift = workingShifts[thisDay].map((shift) => {
+      const start = shift.from.split(":");
+      const end = shift.to.split(":");
       return {
         from: set(date, {
           hours: Number(start[0]),
@@ -301,9 +301,9 @@ export function getReservationDayHours(
       };
     });
 
-    const duration = service.duration.split(':');
-    const start = service.reservation_time.from.split(':');
-    const end = service.reservation_time.to.split(':');
+    const duration = service.duration.split(":");
+    const start = service.reservation_time.from.split(":");
+    const end = service.reservation_time.to.split(":");
 
     let startTime = set(date, {
       hours: Number(start[0]),
@@ -324,20 +324,20 @@ export function getReservationDayHours(
 
     while (isBefore(startTime, endTime)) {
       const time = new Date(startTime);
-      const is_reserved = (reservationDates ?? []).some(d => {
+      const is_reserved = (reservationDates ?? []).some((d) => {
         const reserved_times = d.reserved_times ?? [];
         const blocked_times = d.blocked_times ?? [];
         const all_times = [...reserved_times, ...blocked_times];
         return (
-          all_times.includes(format(time, 'HH:mm')) &&
+          all_times.includes(format(time, "HH:mm")) &&
           d.day === getDay(date) &&
           d.month === getMonth(date) + 1 &&
           d.year === getYear(date)
         );
       });
 
-      const isBetween = thisDayWorkingShift.some(s =>
-        isWithinInterval(time, { start: s.from, end: s.to }),
+      const isBetween = thisDayWorkingShift.some((s) =>
+        isWithinInterval(time, { start: s.from, end: s.to })
       );
       if (!is_reserved && time >= now && isBetween) {
         allTimes.push({
@@ -376,9 +376,9 @@ export function isLimitByTicketEnded(tickets_count: {
 }
 
 export function licenseValidity(
-  expire_date?: License['expire_date'],
-  is_trial?: License['is_trial'],
-  tickets_count?: { total: number; used: number } | null,
+  expire_date?: License["expire_date"],
+  is_trial?: License["is_trial"],
+  tickets_count?: { total: number; used: number } | null
 ) {
   const diff = differenceInCalendarDays(convertToDate(expire_date), new Date());
   const isAlert =

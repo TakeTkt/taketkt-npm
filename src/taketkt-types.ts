@@ -1,13 +1,13 @@
-import {Currency} from './currencies';
-import type { TimeZones } from './timezones';
+import { Currency } from "./currencies";
+import type { TimeZones } from "./timezones";
 import type {
   Timestamp,
   GeoPoint,
   DocumentReference,
   DocumentData,
   FieldValue,
-} from 'firebase/firestore';
-import type { Decimal } from '@prisma/client/runtime';
+} from "firebase/firestore";
+import type { Decimal } from "@prisma/client/runtime";
 
 export type ValueOf<T> = T[keyof T];
 export type TypeOf<T> = keyof T;
@@ -23,6 +23,7 @@ export type User = {
   country_code?: string;
   phone?: string;
   welcomeEmailSent?: boolean;
+  is_test?: boolean; // Test for taketkt devs
 };
 
 export type DashboardUser = {
@@ -38,7 +39,8 @@ export type DashboardUser = {
   photo?: string | null;
   emailVerified?: boolean;
   phoneNumberVerified?: boolean;
-  gender?: 'MALE' | 'FEMALE';
+  gender?: "MALE" | "FEMALE";
+  is_test?: boolean; // Test for taketkt devs
 };
 
 export type UserAccess = {
@@ -55,13 +57,13 @@ export type UserAccess = {
 };
 
 export type Permissions =
-  | 'ACCESS_DASHBOARD_PERMISSION'
-  | 'VIEW_LANDING_PAGE_PERMISSION'
-  | 'CUSTOMERS_PERMISSION'
-  | 'SERVICES_PERMISSION'
-  | 'EMPLOYEES_PERMISSION'
-  | 'BRANCH_SETTINGS_PERMISSION'
-  | 'VIEW_REPORTS_PERMISSION';
+  | "ACCESS_DASHBOARD_PERMISSION"
+  | "VIEW_LANDING_PAGE_PERMISSION"
+  | "CUSTOMERS_PERMISSION"
+  | "SERVICES_PERMISSION"
+  | "EMPLOYEES_PERMISSION"
+  | "BRANCH_SETTINGS_PERMISSION"
+  | "VIEW_REPORTS_PERMISSION";
 
 export type Store = {
   name_en: string;
@@ -87,6 +89,7 @@ export type Store = {
   };
   is_verified?: boolean;
   show_in_main_page?: boolean;
+  is_test?: boolean; // Test for taketkt devs
 };
 
 export type Branch = {
@@ -197,7 +200,7 @@ export type UserLogin = {
 } & PlatformInfo;
 
 export type TicketUpdate = {
-  type: 'SENT' | 'READY' | 'CANCELED' | 'SERVING' | 'DONE' | 'CONFIRMED';
+  type: "SENT" | "READY" | "CANCELED" | "SERVING" | "DONE" | "CONFIRMED";
   time: Date | Timestamp;
 };
 
@@ -359,14 +362,14 @@ export type License = {
   start_date: Date | Timestamp;
   expire_date: Date | Timestamp;
   is_trial: boolean;
-  features: LicensePackage['features'];
+  features: LicensePackage["features"];
   is_test?: boolean; // Test for taketkt devs
   number_of_tickets?: number;
   number_of_used_tickets?: number;
 };
 
 export type Integration = {
-  id: 'lazywait' | 'moyasar'; // 'lazywait' | 'foodics' | etc...
+  id: "lazywait" | "moyasar"; // 'lazywait' | 'foodics' | etc...
   apiKey: string;
   store_id: string;
   branches: {
@@ -485,8 +488,8 @@ export type FAQ = {
     faq_id: string;
     answer_ar: string;
     answer_en: string;
-    questions_ar?: string;
-    questions_en?: string;
+    question_ar?: string;
+    question_en?: string;
+    active?: boolean;
   }[];
-  active?: boolean;
 };
