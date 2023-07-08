@@ -2,33 +2,26 @@
   "name": "taketkt",
   "version": "1.1.6",
   "description": "taketkt types, setters, validators, utilities, and generate functions that are used across taketkt projects",
-  "main": "./lib/cjs/index.js",
-  "module": "./lib/mjs/index.js",
-  "types": "./lib/cjs/index.d.ts",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "types": "lib/index.d.js",
+  "scripts": {
+    "build": "yarn clean:cjs && yarn clean:esm && yarn build:cjs && yarn build:esm",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:umd": "webpack",
+    "clean:cjs": "rimraf lib",
+    "clean:esm": "rimraf esm",
+    "release": "yarn build && release-it"
+  },
   "repository": "https://github.com/TakeTkt/taketkt-npm.git",
   "author": "Mustafa Alsihati <51824138+MustafaAlsihati@users.noreply.github.com>",
   "license": "MIT",
   "private": false,
-  "type": "module",
-  "scripts": {
-    "clean": "rimraf lib",
-    "build": "yarn clean && tsc -p tsconfig-mjs.json && tsc -p tsconfig-cjs.json",
-    "release": "yarn build && release-it"
-  },
-  "devDependencies": {
-    "@types/node": "^20.3.2",
-    "@typescript-eslint/eslint-plugin": "^5.60.1",
-    "@typescript-eslint/parser": "^5.60.1",
-    "eslint": "^8.43.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.8.8",
-    "release-it": "^15.11.0",
-    "typescript": "^5.1.5"
-  },
   "files": [
-    "lib/**/*"
+    "lib",
+    "esm",
+    "umd"
   ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
@@ -43,118 +36,19 @@
     "lodash.isequalwith": "^4.4.0",
     "rimraf": "^5.0.1"
   },
-  "exports": {
-    ".": {
-      "require": {
-        "types": "./lib/cjs/index.d.ts",
-        "default": "./lib/cjs/index.js"
-      },
-      "import": {
-        "types": "./lib/mjs/index.d.ts",
-        "default": "./lib/mjs/index.js"
-      }
-    },
-    "./setters": {
-      "require": {
-        "types": "./lib/cjs/setters.d.ts",
-        "default": "./lib/cjs/setters.js"
-      },
-      "import": {
-        "types": "./lib/mjs/setters.d.ts",
-        "default": "./lib/mjs/setters.js"
-      }
-    },
-    "./taketkt-types": {
-      "require": {
-        "types": "./lib/cjs/taketkt-types.d.ts",
-        "default": "./lib/cjs/taketkt-types.js"
-      },
-      "import": {
-        "types": "./lib/mjs/taketkt-types.d.ts",
-        "default": "./lib/mjs/taketkt-types.js"
-      }
-    },
-    "./utils": {
-      "require": {
-        "types": "./lib/cjs/utils.d.ts",
-        "default": "./lib/cjs/utils.js"
-      },
-      "import": {
-        "types": "./lib/mjs/utils.d.ts",
-        "default": "./lib/mjs/utils.js"
-      }
-    },
-    "./timezones": {
-      "require": {
-        "types": "./lib/cjs/timezones.d.ts",
-        "default": "./lib/cjs/timezones.js"
-      },
-      "import": {
-        "types": "./lib/mjs/timezones.d.ts",
-        "default": "./lib/mjs/timezones.js"
-      }
-    },
-    "./roles": {
-      "require": {
-        "types": "./lib/cjs/roles.d.ts",
-        "default": "./lib/cjs/roles.js"
-      },
-      "import": {
-        "types": "./lib/mjs/roles.d.ts",
-        "default": "./lib/mjs/roles.js"
-      }
-    },
-    "./permissions": {
-      "require": {
-        "types": "./lib/cjs/permissions.d.ts",
-        "default": "./lib/cjs/permissions.js"
-      },
-      "import": {
-        "types": "./lib/mjs/permissions.d.ts",
-        "default": "./lib/mjs/permissions.js"
-      }
-    },
-    "./currencies": {
-      "require": {
-        "types": "./lib/cjs/currencies.d.ts",
-        "default": "./lib/cjs/currencies.js"
-      },
-      "import": {
-        "types": "./lib/mjs/currencies.d.ts",
-        "default": "./lib/mjs/currencies.js"
-      }
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "setters": [
-        "lib/mjs/setters.d.ts",
-        "lib/cjs/setters.d.ts"
-      ],
-      "taketkt-types": [
-        "lib/mjs/taketkt-types.d.ts",
-        "lib/cjs/taketkt-types.d.ts"
-      ],
-      "utils": [
-        "lib/mjs/utils.d.ts",
-        "lib/cjs/utils.d.ts"
-      ],
-      "timezones": [
-        "lib/mjs/timezones.d.ts",
-        "lib/cjs/timezones.d.ts"
-      ],
-      "roles": [
-        "lib/mjs/roles.d.ts",
-        "lib/cjs/roles.d.ts"
-      ],
-      "permissions": [
-        "lib/mjs/permissions.d.ts",
-        "lib/cjs/permissions.d.ts"
-      ],
-      "currencies": [
-        "lib/mjs/currencies.d.ts",
-        "lib/cjs/currencies.d.ts"
-      ]
-    }
+  "devDependencies": {
+    "@types/node": "^20.3.2",
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
+    "eslint": "^8.43.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.8",
+    "release-it": "^15.11.0",
+    "typescript": "^5.1.5",
+    "ts-loader": "^6.0.4",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7"
   }
 }
