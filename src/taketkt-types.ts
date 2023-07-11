@@ -421,7 +421,7 @@ export type PaymentTypes = {
 };
 
 export type SalesRequest = {
-  request_id: string;
+  id: number;
   phone: string;
   email?: string | null;
   is_done: boolean;
