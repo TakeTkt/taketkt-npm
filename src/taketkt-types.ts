@@ -347,7 +347,7 @@ export type MessagingDoc = {
 };
 
 export type OtpCodeDoc = {
-  id: string;
+  id: number;
   phoneNumber: string;
   code: number;
   expiry: Date | Timestamp;
