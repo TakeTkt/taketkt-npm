@@ -1,5 +1,4 @@
 import format from "date-fns/format";
-import type { GeoPoint } from "firebase/firestore";
 import isEqualWith from "lodash.isequalwith";
 import {
   License,
@@ -59,7 +58,10 @@ export function cleanObject(obj: any) {
 }
 
 export function convertFromGeoPoint(
-  location?: GeoPoint & { _latitude?: number; _longitude?: number }
+  location?: { latitude?: number; longitude?: number } & {
+    _latitude?: number;
+    _longitude?: number;
+  }
 ) {
   // This method corrects the location object
   if (location?._latitude && location?._longitude) {

@@ -1,13 +1,7 @@
+import type { Decimal } from "@prisma/client/runtime";
+import type { FieldValue, GeoPoint, Timestamp } from "firebase/firestore";
 import { Currency } from "./currencies";
 import type { TimeZones } from "./timezones";
-import type {
-  Timestamp,
-  GeoPoint,
-  DocumentReference,
-  DocumentData,
-  FieldValue,
-} from "firebase/firestore";
-import type { Decimal } from "@prisma/client/runtime";
 
 export type ValueOf<T> = T[keyof T];
 export type TypeOf<T> = keyof T;
@@ -17,7 +11,7 @@ export type DeepProp<T extends object, K extends string> = K extends keyof T
 
 export type User = {
   user_id: string;
-  created_date?: Date | Timestamp;
+  created_date?: Date;
   username: string;
   email?: string;
   country_code?: string;
@@ -28,7 +22,7 @@ export type User = {
 
 export type DashboardUser = {
   user_id: string;
-  created_date?: Date | Timestamp;
+  created_date?: Date;
   firstName: string;
   lastName: string;
   email: string;
@@ -70,7 +64,7 @@ export type Store = {
   name_ar: string;
   store_id: string;
   store_url: string;
-  created_date: Date | Timestamp;
+  created_date: Date;
   logo?: string | null;
   owner_id?: string;
   currency?: Currency;
@@ -101,7 +95,7 @@ export type Branch = {
   branch_id?: string;
   branch_number: string;
   store_url: string;
-  created_date: Date | Timestamp;
+  created_date: Date;
   current_id?: number;
   auto_reset_current_id?: boolean;
   working_shifts_timezone: TimeZones;
@@ -130,7 +124,7 @@ export type Service = {
   store_url: string;
   is_waiting?: boolean;
   is_reservation?: boolean;
-  created_date?: Date | Timestamp;
+  created_date?: Date;
   reservation_time?: {
     from: string;
     to: string;
@@ -168,19 +162,6 @@ export type PlatformInfo = {
   os?: string;
 };
 
-export type BranchVisit = {
-  visit_id: string;
-  store_id: string;
-  branch_id: string;
-  user_id: string;
-  reference: DocumentReference;
-  device?: PlatformInfo;
-  visit_date?: Date | Timestamp;
-  customer_reference: DocumentReference;
-  is_waiting?: boolean;
-  is_reservation?: boolean;
-};
-
 export type ClientCustomer = {
   user_id: string;
   store_id: string;
@@ -190,7 +171,7 @@ export type ClientCustomer = {
   country_code?: string;
   phone?: string;
   number_of_visits?: number;
-  last_visit?: Date | Timestamp;
+  last_visit?: Date;
 };
 
 export type UserLogin = {
@@ -303,31 +284,24 @@ export type ReservationDay = {
   duration: string;
 };
 
-export type StatementVisit = {
-  is_waiting?: boolean;
-  is_reservation?: boolean;
-  ref: DocumentReference<DocumentData>;
-};
-
 export type ReportStatement = {
   id: string;
   store_id: string;
   branch_id: string;
-  waitings?: number | FieldValue;
-  reservations?: number | FieldValue;
-  number_of_visits?: number | FieldValue;
-  waiting_did_not_come_customers?: number | FieldValue;
-  reservations_did_not_come_customers?: number | FieldValue;
-  total_did_not_come_customers?: number | FieldValue;
-  reservations_canceled?: number | FieldValue;
-  waitings_canceled?: number | FieldValue;
-  total_canceled?: number | FieldValue;
-  reservations_dones?: number | FieldValue;
-  waitings_dones?: number | FieldValue;
-  total_dones?: number | FieldValue;
-  last_visit?: Date | Timestamp;
-  customers?: string[] | FieldValue;
-  visits?: StatementVisit[] | FieldValue;
+  waitings?: number;
+  reservations?: number;
+  number_of_visits?: number;
+  waiting_did_not_come_customers?: number;
+  reservations_did_not_come_customers?: number;
+  total_did_not_come_customers?: number;
+  reservations_canceled?: number;
+  waitings_canceled?: number;
+  total_canceled?: number;
+  reservations_dones?: number;
+  waitings_dones?: number;
+  total_dones?: number;
+  last_visit?: Date;
+  customers?: string[];
 };
 
 export type EmployeeRole = {
@@ -337,20 +311,14 @@ export type EmployeeRole = {
   permissions: Permissions[];
   is_admin?: boolean;
   is_default?: boolean;
-  creation_date?: Date | Timestamp;
-};
-
-export type MessagingDoc = {
-  whatsAppSent?: number | FieldValue;
-  smsSent?: number | FieldValue;
-  emailsSent?: number | FieldValue;
+  creation_date?: Date;
 };
 
 export type OtpCodeDoc = {
   id: number;
   phoneNumber: string;
   code: number;
-  expiry: Date | Timestamp;
+  expiry: Date;
   userId: string;
 };
 
@@ -358,9 +326,9 @@ export type License = {
   license_id: string;
   store_id: string;
   payment_id?: string;
-  created_date: Date | Timestamp;
-  start_date: Date | Timestamp;
-  expire_date: Date | Timestamp;
+  created_date: Date;
+  start_date: Date;
+  expire_date: Date;
   is_trial: boolean;
   features: LicensePackage["features"];
   is_test?: boolean; // Test for taketkt devs
@@ -388,8 +356,8 @@ export type SupportTicket = {
   userName?: string;
   userEmail?: string;
   userPhoneNumber?: string;
-  created_date?: Date | Timestamp;
-  last_update?: Date | Timestamp;
+  created_date?: Date;
+  last_update?: Date;
   store_name_en?: string;
   store_name_ar?: string;
   branch_name_en?: string;
@@ -426,14 +394,14 @@ export type SalesRequest = {
   email?: string | null;
   is_done: boolean;
   is_canceled: boolean;
-  created_date: Date | Timestamp;
+  created_date: Date;
 };
 
 export type BranchPolicy = {
   policy_id: string;
   store_id: string;
   branches: string[];
-  createdDate: Date | Timestamp;
+  createdDate: Date;
   name: string;
   text: string;
   active: boolean;
