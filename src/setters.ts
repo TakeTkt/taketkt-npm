@@ -2,7 +2,7 @@ import roles from "./roles";
 import {
   Branch,
   BranchPolicy,
-  ClientCustomer,
+  Customer,
   DashboardUser,
   EmployeeRole,
   Reservation,
@@ -43,9 +43,7 @@ export function setNewDashboardUser(
   } as DashboardUser;
 }
 
-export function setNewCustomer(
-  customer: Partial<ClientCustomer> | null
-): ClientCustomer {
+export function setNewCustomer(customer: Partial<Customer> | null): Customer {
   return {
     store_id: "",
     branches_ids: [],
@@ -55,7 +53,7 @@ export function setNewCustomer(
     phone: "",
     number_of_visits: 0,
     ...(customer ?? {}),
-  } as ClientCustomer;
+  } as Customer;
 }
 
 export function setNewStore(store?: Partial<Store>) {

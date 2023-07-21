@@ -162,7 +162,8 @@ export type PlatformInfo = {
   os?: string;
 };
 
-export type ClientCustomer = {
+export type Customer = {
+  id: number;
   user_id: string;
   store_id: string;
   branches_ids?: string[];
