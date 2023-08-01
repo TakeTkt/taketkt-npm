@@ -1,25 +1,19 @@
+import utcToZonedTime from "date-fns-tz/utcToZonedTime";
+import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
 import format from "date-fns/format";
+import intervalToDuration from "date-fns/intervalToDuration";
+import isWithinInterval from "date-fns/isWithinInterval";
+import parse from "date-fns/parse";
+import set from "date-fns/set";
 import isEqualWith from "lodash.isequalwith";
 import {
   License,
   Reservation,
-  ReservationDay,
   Service,
   Waiting,
   WorkingShift,
   WorkingShifts,
 } from "./taketkt-types";
-import set from "date-fns/set";
-import isBefore from "date-fns/isBefore";
-import add from "date-fns/add";
-import getDay from "date-fns/getDay";
-import getMonth from "date-fns/getMonth";
-import getYear from "date-fns/getYear";
-import isWithinInterval from "date-fns/isWithinInterval";
-import parse from "date-fns/parse";
-import intervalToDuration from "date-fns/intervalToDuration";
-import utcToZonedTime from "date-fns-tz/utcToZonedTime";
-import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
 
 export function convertToDate(date: any) {
   if (date instanceof Date) {
@@ -272,94 +266,6 @@ export function isWithinWaitingTimeRange(service: Service, timezone?: string) {
     seconds: 0,
   });
   return isWithinInterval(now, { start, end });
-}
-
-export function getReservationDayHours(
-  service: Service,
-  workingShifts: WorkingShifts,
-  date: Date,
-  reservationDates: ReservationDay[]
-) {
-  const now = new Date();
-  const thisDay = WeekDays[date.getDay()];
-
-  let allTimes: { from: Date; to: Date }[] = [];
-
-  if (service?.duration && service?.reservation_time && workingShifts) {
-    const thisDayWorkingShift = workingShifts[thisDay].map((shift) => {
-      const start = shift.from.split(":");
-      const end = shift.to.split(":");
-      return {
-        from: set(date, {
-          hours: Number(start[0]),
-          minutes: Number(start[1]),
-          seconds: 0,
-        }),
-        to: set(date, {
-          hours: Number(end[0]),
-          minutes: Number(end[1]),
-          seconds: 0,
-        }),
-      };
-    });
-
-    const duration = service.duration.split(":");
-    const start = service.reservation_time.from.split(":");
-    const end = service.reservation_time.to.split(":");
-
-    let startTime = set(date, {
-      hours: Number(start[0]),
-      minutes: Number(start[1]),
-      seconds: 0,
-    });
-    let endTime = set(date, {
-      hours: Number(end[0]),
-      minutes: Number(end[1]),
-      seconds: 0,
-    });
-
-    if (isBefore(endTime, startTime)) {
-      endTime = add(endTime, {
-        days: 1,
-      });
-    }
-
-    while (isBefore(startTime, endTime)) {
-      const time = new Date(startTime);
-      const is_reserved = (reservationDates ?? []).some((d) => {
-        const reserved_times = d.reserved_times ?? [];
-        const blocked_times = d.blocked_times ?? [];
-        const all_times = [...reserved_times, ...blocked_times];
-        return (
-          all_times.includes(format(time, "HH:mm")) &&
-          d.day === getDay(date) &&
-          d.month === getMonth(date) + 1 &&
-          d.year === getYear(date)
-        );
-      });
-
-      const isBetween = thisDayWorkingShift.some((s) =>
-        isWithinInterval(time, { start: s.from, end: s.to })
-      );
-      if (!is_reserved && time >= now && isBetween) {
-        allTimes.push({
-          from: time,
-          to: add(time, {
-            hours: Number(duration[0]),
-            minutes: Number(duration[1]),
-          }),
-        });
-      }
-      const added_hours = Number(duration[0]);
-      const added_minutes = Number(duration[1]);
-      startTime = add(startTime, {
-        hours: added_hours,
-        minutes: added_minutes,
-      });
-    }
-  }
-
-  return allTimes;
 }
 
 export function isLimitByTicketNearEnd(tickets_count: {

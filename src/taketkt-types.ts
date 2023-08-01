@@ -271,18 +271,13 @@ export type Reservation = {
   vat_percentage?: number;
 };
 
-export type ReservationDay = {
-  id: string;
-  day: number;
-  month: number;
-  year: number;
-  is_full: boolean;
-  number_of_reservations: number;
-  reserved_times: string[];
-  blocked_times?: string[];
-  start_at: string;
-  end_at: string;
-  duration: string;
+export type BlockedTimes = {
+  id: number;
+  service_id: string;
+  from_date_time: Date | string;
+  to_date_time: Date | string;
+  reason?: string;
+  created_date: Date | string;
 };
 
 export type ReportStatement = {
