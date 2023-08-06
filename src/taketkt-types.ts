@@ -156,12 +156,6 @@ export type WorkingShifts = {
   [key: string]: WorkingShift[];
 };
 
-export type PlatformInfo = {
-  browser?: string;
-  browser_version?: string;
-  os?: string;
-};
-
 export type Customer = {
   id: number;
   user_id: string;
@@ -174,12 +168,6 @@ export type Customer = {
   number_of_visits?: number;
   last_visit?: Date;
 };
-
-export type UserLogin = {
-  user_id: string;
-  last_login: Timestamp;
-  number_of_logins?: number | FieldValue;
-} & PlatformInfo;
 
 export type TicketUpdate = {
   type: "SENT" | "READY" | "CANCELED" | "SERVING" | "DONE" | "CONFIRMED";

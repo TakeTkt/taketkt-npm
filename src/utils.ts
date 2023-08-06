@@ -1,3 +1,10 @@
+import add from "date-fns/add";
+import endOfDay from "date-fns/endOfDay";
+import isAfter from "date-fns/isAfter";
+import isBefore from "date-fns/isBefore";
+import isSameDay from "date-fns/isSameDay";
+import parseISO from "date-fns/parseISO";
+import startOfDay from "date-fns/startOfDay";
 import utcToZonedTime from "date-fns-tz/utcToZonedTime";
 import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
 import format from "date-fns/format";
@@ -302,4 +309,169 @@ export function licenseValidity(
     isAlert,
     isHighAlert,
   };
+}
+
+export function getReservationTimes(
+  selectedDate: Date,
+  duration: string,
+  workingShifts: WorkingShifts,
+  reservationTime: Service["reservation_time"],
+  blockedTimes: {
+    from_date_time: string | null;
+    to_date_time: string | null;
+  }[],
+  reservedTimes: {
+    from_date_time: string | null;
+    to_date_time: string | null;
+  }[]
+) {
+  const now = new Date();
+  const startTime = startOfDay(selectedDate);
+  const endTime = endOfDay(selectedDate);
+  const [hours, minutes] = duration.split(":");
+
+  let availableTimes: { start: string; end: string }[] = [];
+
+  // * Generate all the possible time slots for the selected date based on the duration
+  let currentSlot = startTime;
+  while (
+    isBefore(currentSlot, endTime) ||
+    currentSlot.getTime() === endTime.getTime()
+  ) {
+    const start = format(currentSlot, "HH:mm");
+    const addedDate = add(currentSlot, {
+      hours: Number(hours),
+      minutes: Number(minutes),
+    });
+    const end = format(addedDate, "HH:mm");
+    currentSlot = addedDate;
+
+    // ? Check if the time slot is after the current time
+    if (isSameDay(selectedDate, now) && isBefore(currentSlot, now)) {
+      continue;
+    }
+
+    availableTimes.push({ start, end });
+  }
+
+  // ? If the selected date is today, add the time range between 23:00 and 00:00
+  if (isSameDay(selectedDate, now)) {
+    const start = "23:00";
+    const end = "00:00";
+    availableTimes.push({ start, end });
+  }
+
+  // * Filter out time slots that overlap with reserved or blocked time slots,
+  // * are outside of working shifts, or are outside of service reservation time
+  availableTimes = availableTimes.filter(({ start, end }) => {
+    const startTime = parseISO(
+      `${format(selectedDate, "yyyy-MM-dd")}T${start}`
+    );
+    const endTime = parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${end}`);
+
+    // ? Check if the time slot is within the working shift
+    const isWithinWorkingShift = [
+      ...(workingShifts?.[format(selectedDate, "EEEE")] ?? []),
+    ].some(({ from, to }) => {
+      const start = parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${from}`);
+      const end = parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${to}`);
+      return (
+        (isAfter(startTime, start) ||
+          startTime.getTime() === start.getTime()) &&
+        (isBefore(endTime, end) || endTime.getTime() === end.getTime())
+      );
+    });
+
+    // ? Check if the time slot is within the service reservation time
+    const isWithinReservationTime =
+      (isAfter(
+        startTime,
+        parseISO(
+          `${format(selectedDate, "yyyy-MM-dd")}T${reservationTime?.from}`
+        )
+      ) ||
+        startTime.getTime() ===
+          parseISO(
+            `${format(selectedDate, "yyyy-MM-dd")}T${reservationTime?.from}`
+          ).getTime()) &&
+      (isBefore(
+        endTime,
+        parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${reservationTime?.to}`)
+      ) ||
+        endTime.getTime() ===
+          parseISO(
+            `${format(selectedDate, "yyyy-MM-dd")}T${reservationTime?.to}`
+          ).getTime());
+
+    // ? Check availability
+    const isAvailable =
+      isWithinWorkingShift &&
+      isWithinReservationTime &&
+      !blockedTimes.some(({ from_date_time, to_date_time }) => {
+        const blockedStartTime = parseISO(from_date_time!);
+        const blockedEndTime = parseISO(to_date_time!);
+        return (
+          ((isAfter(startTime, blockedStartTime) ||
+            startTime.getTime() === blockedStartTime.getTime()) &&
+            isBefore(startTime, blockedEndTime)) ||
+          ((isAfter(endTime, blockedStartTime) ||
+            endTime.getTime() === blockedStartTime.getTime()) &&
+            (isBefore(endTime, blockedEndTime) ||
+              endTime.getTime() === blockedEndTime.getTime())) ||
+          (isBefore(startTime, blockedStartTime) &&
+            isAfter(endTime, blockedEndTime))
+        );
+      }) &&
+      !reservedTimes.some(({ from_date_time, to_date_time }) => {
+        const reservedStartTime = parseISO(from_date_time!);
+        const reservedEndTime = parseISO(to_date_time!);
+        return (
+          ((isAfter(startTime, reservedStartTime) ||
+            startTime.getTime() === reservedStartTime.getTime()) &&
+            isBefore(startTime, reservedEndTime)) ||
+          ((isAfter(endTime, reservedStartTime) ||
+            endTime.getTime() === reservedStartTime.getTime()) &&
+            (isBefore(endTime, reservedEndTime) ||
+              endTime.getTime() === reservedEndTime.getTime())) ||
+          (isBefore(startTime, reservedStartTime) &&
+            isAfter(endTime, reservedEndTime))
+        );
+      });
+    return isAvailable;
+  });
+
+  // * Format the available times
+  let list = availableTimes.map(({ start, end }) => {
+    let from = new Date(
+      selectedDate.setHours(+start.split(":")[0], +start.split(":")[1], 0)
+    );
+    let to = new Date(
+      selectedDate.setHours(+end.split(":")[0], +end.split(":")[1], 0)
+    );
+    if (isBefore(to, from)) {
+      to = add(to, { days: 1 });
+    }
+
+    return { from, to };
+  });
+
+  // * Remove duplicates
+  list = list.filter((obj, index, self) => {
+    return (
+      index ===
+      self.findIndex(
+        (t) =>
+          t.from.getTime() === obj.from.getTime() &&
+          t.to.getTime() === obj.to.getTime()
+      )
+    );
+  });
+
+  // * Sort the list
+  list = list.sort((a, b) => {
+    return a.from.getTime() - b.from.getTime();
+  });
+
+  // = Return the list
+  return list;
 }
