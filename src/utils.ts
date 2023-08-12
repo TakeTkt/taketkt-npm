@@ -323,7 +323,12 @@ export function getReservationTimes(
   reservedTimes: {
     from_date_time: string | null;
     to_date_time: string | null;
-  }[]
+  }[],
+  isRequireEmployee = false,
+  employeeTimes: {
+    from_date_time: string | null;
+    to_date_time: string | null;
+  }[] = []
 ) {
   const now = new Date();
   const startTime = startOfDay(selectedDate);
@@ -404,25 +409,23 @@ export function getReservationTimes(
           ).getTime());
 
     // ? Check availability
-    const isAvailable =
-      isWithinWorkingShift &&
-      isWithinReservationTime &&
-      !blockedTimes.some(({ from_date_time, to_date_time }) => {
-        const blockedStartTime = parseISO(from_date_time!);
-        const blockedEndTime = parseISO(to_date_time!);
-        return (
-          ((isAfter(startTime, blockedStartTime) ||
-            startTime.getTime() === blockedStartTime.getTime()) &&
-            isBefore(startTime, blockedEndTime)) ||
-          ((isAfter(endTime, blockedStartTime) ||
-            endTime.getTime() === blockedStartTime.getTime()) &&
-            (isBefore(endTime, blockedEndTime) ||
-              endTime.getTime() === blockedEndTime.getTime())) ||
-          (isBefore(startTime, blockedStartTime) &&
-            isAfter(endTime, blockedEndTime))
-        );
-      }) &&
-      !reservedTimes.some(({ from_date_time, to_date_time }) => {
+    const isBlocked = blockedTimes.some(({ from_date_time, to_date_time }) => {
+      const blockedStartTime = parseISO(from_date_time!);
+      const blockedEndTime = parseISO(to_date_time!);
+      return (
+        ((isAfter(startTime, blockedStartTime) ||
+          startTime.getTime() === blockedStartTime.getTime()) &&
+          isBefore(startTime, blockedEndTime)) ||
+        ((isAfter(endTime, blockedStartTime) ||
+          endTime.getTime() === blockedStartTime.getTime()) &&
+          (isBefore(endTime, blockedEndTime) ||
+            endTime.getTime() === blockedEndTime.getTime())) ||
+        (isBefore(startTime, blockedStartTime) &&
+          isAfter(endTime, blockedEndTime))
+      );
+    });
+    const isReserved = reservedTimes.some(
+      ({ from_date_time, to_date_time }) => {
         const reservedStartTime = parseISO(from_date_time!);
         const reservedEndTime = parseISO(to_date_time!);
         return (
@@ -436,8 +439,39 @@ export function getReservationTimes(
           (isBefore(startTime, reservedStartTime) &&
             isAfter(endTime, reservedEndTime))
         );
-      });
-    return isAvailable;
+      }
+    );
+    const isEmployeeBusy = employeeTimes.some(
+      ({ from_date_time, to_date_time }) => {
+        const employeeReservedStartTime = parseISO(from_date_time!);
+        const employeeReservedEndTime = parseISO(to_date_time!);
+        return (
+          ((isAfter(startTime, employeeReservedStartTime) ||
+            startTime.getTime() === employeeReservedStartTime.getTime()) &&
+            isBefore(startTime, employeeReservedEndTime)) ||
+          ((isAfter(endTime, employeeReservedStartTime) ||
+            endTime.getTime() === employeeReservedStartTime.getTime()) &&
+            (isBefore(endTime, employeeReservedEndTime) ||
+              endTime.getTime() === employeeReservedEndTime.getTime())) ||
+          (isBefore(startTime, employeeReservedStartTime) &&
+            isAfter(endTime, employeeReservedEndTime))
+        );
+      }
+    );
+    if (isRequireEmployee) {
+      return (
+        isWithinWorkingShift &&
+        isWithinReservationTime &&
+        !isBlocked &&
+        !isEmployeeBusy
+      );
+    }
+    return (
+      isWithinWorkingShift &&
+      isWithinReservationTime &&
+      !isBlocked &&
+      !isReserved
+    );
   });
 
   // * Format the available times
