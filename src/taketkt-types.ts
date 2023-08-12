@@ -140,7 +140,9 @@ export type Service = {
   max_limit?: number;
   enable_max_days_ahead?: boolean;
   max_days_ahead?: number;
+  require_employee?: boolean;
   integrations?: ServiceIntegrations;
+  employees?: DashboardUser[];
 };
 
 export type ServiceIntegrations = {
