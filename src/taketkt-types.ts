@@ -183,6 +183,7 @@ export type Waiting = {
   branch_id?: string;
   service_id?: string;
   user_id?: string;
+  employee_id?: string | null;
   name: string;
   email: string;
   country_code?: string;
@@ -223,6 +224,7 @@ export type Reservation = {
   branch_id?: string;
   service_id?: string;
   user_id?: string;
+  employee_id?: string | null;
   name: string;
   email: string;
   country_code?: string;
