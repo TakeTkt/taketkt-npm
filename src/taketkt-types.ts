@@ -325,6 +325,7 @@ export type License = {
 };
 
 export type Integration = {
+  integration_id: number;
   id: "lazywait" | "moyasar"; // 'lazywait' | 'foodics' | etc...
   apiKey: string;
   store_id: string;
