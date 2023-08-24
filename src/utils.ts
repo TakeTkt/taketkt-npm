@@ -328,7 +328,8 @@ export function getReservationTimes(
   employeeTimes: {
     from_date_time: string | null;
     to_date_time: string | null;
-  }[] = []
+  }[] = [],
+  ignoreCurrentTime = false
 ) {
   const now = new Date();
   const startTime = startOfDay(selectedDate);
@@ -352,7 +353,11 @@ export function getReservationTimes(
     currentSlot = addedDate;
 
     // ? Check if the time slot is after the current time
-    if (isSameDay(selectedDate, now) && isBefore(currentSlot, now)) {
+    if (
+      !ignoreCurrentTime &&
+      isSameDay(selectedDate, now) &&
+      isBefore(currentSlot, now)
+    ) {
       continue;
     }
 
