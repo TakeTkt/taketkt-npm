@@ -364,13 +364,6 @@ export function getReservationTimes(
     availableTimes.push({ start, end });
   }
 
-  // ? If the selected date is today, add the time range between 23:00 and 00:00
-  if (isSameDay(selectedDate, now)) {
-    const start = "23:00";
-    const end = "00:00";
-    availableTimes.push({ start, end });
-  }
-
   // * Filter out time slots that overlap with reserved or blocked time slots,
   // * are outside of working shifts, or are outside of service reservation time
   availableTimes = availableTimes.filter(({ start, end }) => {
