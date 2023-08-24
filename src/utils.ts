@@ -332,8 +332,8 @@ export function getReservationTimes(
   ignoreCurrentTime = false
 ) {
   const now = new Date();
-  const startTime = startOfDay(selectedDate);
-  const endTime = endOfDay(selectedDate);
+  const startTime = add(startOfDay(selectedDate), { hours: 3 });
+  const endTime = add(endOfDay(selectedDate), { hours: 3 });
   const [hours, minutes] = duration.split(":");
 
   let availableTimes: { start: string; end: string }[] = [];
@@ -364,17 +364,36 @@ export function getReservationTimes(
     availableTimes.push({ start, end });
   }
 
+  // * Add the times for the next working shift if it's between 00:00 and 03:00
+  const currentHour = now.getHours();
+  if (currentHour >= 0 && currentHour < 3) {
+    const nextDay = add(selectedDate, { days: 1 });
+    const nextWorkingShift = [
+      ...(workingShifts?.[format(selectedDate, "EEEE")] ?? []),
+      ...(workingShifts?.[format(nextDay, "EEEE")] ?? []),
+    ].find(({ from }) => {
+      const shiftStart = parseISO(
+        `${format(selectedDate, "yyyy-MM-dd")}T${from}`
+      );
+      return isAfter(now, shiftStart);
+    });
+    if (nextWorkingShift) {
+      const { from, to } = nextWorkingShift;
+      availableTimes.push({ start: from, end: to });
+    }
+  }
+
   // * Filter out time slots that overlap with reserved or blocked time slots,
   // * are outside of working shifts, or are outside of service reservation time
   availableTimes = availableTimes.filter(({ start, end }) => {
-    const startTime = parseISO(
-      `${format(selectedDate, "yyyy-MM-dd")}T${start}`
-    );
-    const endTime = parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${end}`);
+    let startTime = parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${start}`);
+    let endTime = parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${end}`);
 
     // ? Check if the time slot is within the working shift
+    const nextDay = add(selectedDate, { days: 1 });
     const isWithinWorkingShift = [
       ...(workingShifts?.[format(selectedDate, "EEEE")] ?? []),
+      ...(workingShifts?.[format(nextDay, "EEEE")] ?? []),
     ].some(({ from, to }) => {
       const start = parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${from}`);
       const end = parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${to}`);
@@ -480,7 +499,11 @@ export function getReservationTimes(
     let to = new Date(
       selectedDate.setHours(+end.split(":")[0], +end.split(":")[1], 0)
     );
-    if (isBefore(to, from)) {
+
+    // ? if time is past midnight then add 1 day
+    if (isBefore(from, startTime)) {
+      from = add(from, { days: 1 });
+    } else if (isBefore(to, startTime)) {
       to = add(to, { days: 1 });
     }
 
@@ -499,7 +522,7 @@ export function getReservationTimes(
     );
   });
 
-  // * Sort the list
+  // * Sort the list and make past midnight times appear last:
   list = list.sort((a, b) => {
     return a.from.getTime() - b.from.getTime();
   });
