@@ -306,8 +306,8 @@ export type OtpCodeDoc = {
   id: number;
   phoneNumber: string;
   code: number;
-  expiry: Date;
-  userId: string;
+  expiry: Date | string;
+  userId?: string;
 };
 
 export type License = {
