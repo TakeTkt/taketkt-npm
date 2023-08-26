@@ -368,6 +368,7 @@ export type LicensePackage = {
     expiration_by_days?: number;
   }[];
   active?: boolean;
+  is_recommended?: boolean;
 };
 
 export type PaymentTypes = {
