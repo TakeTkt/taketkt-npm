@@ -386,8 +386,14 @@ export function getReservationTimes(
   // * Filter out time slots that overlap with reserved or blocked time slots,
   // * are outside of working shifts, or are outside of service reservation time
   availableTimes = availableTimes.filter(({ start, end }) => {
-    let startTime = parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${start}`);
-    let endTime = parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${end}`);
+    let startTime = set(selectedDate, {
+      hours: +start.split(":")[0],
+      minutes: +start.split(":")[1],
+    });
+    let endTime = set(selectedDate, {
+      hours: +end.split(":")[0],
+      minutes: +end.split(":")[1],
+    });
 
     // ? Check if the time slot is within the working shift
     const nextDay = add(selectedDate, { days: 1 });
@@ -433,8 +439,7 @@ export function getReservationTimes(
         ((isAfter(startTime, blockedStartTime) ||
           startTime.getTime() === blockedStartTime.getTime()) &&
           isBefore(startTime, blockedEndTime)) ||
-        ((isAfter(endTime, blockedStartTime) ||
-          endTime.getTime() === blockedStartTime.getTime()) &&
+        (isAfter(endTime, blockedStartTime) &&
           (isBefore(endTime, blockedEndTime) ||
             endTime.getTime() === blockedEndTime.getTime())) ||
         (isBefore(startTime, blockedStartTime) &&
@@ -449,8 +454,7 @@ export function getReservationTimes(
           ((isAfter(startTime, reservedStartTime) ||
             startTime.getTime() === reservedStartTime.getTime()) &&
             isBefore(startTime, reservedEndTime)) ||
-          ((isAfter(endTime, reservedStartTime) ||
-            endTime.getTime() === reservedStartTime.getTime()) &&
+          (isAfter(endTime, reservedStartTime) &&
             (isBefore(endTime, reservedEndTime) ||
               endTime.getTime() === reservedEndTime.getTime())) ||
           (isBefore(startTime, reservedStartTime) &&
@@ -466,8 +470,7 @@ export function getReservationTimes(
           ((isAfter(startTime, employeeReservedStartTime) ||
             startTime.getTime() === employeeReservedStartTime.getTime()) &&
             isBefore(startTime, employeeReservedEndTime)) ||
-          ((isAfter(endTime, employeeReservedStartTime) ||
-            endTime.getTime() === employeeReservedStartTime.getTime()) &&
+          (isAfter(endTime, employeeReservedStartTime) &&
             (isBefore(endTime, employeeReservedEndTime) ||
               endTime.getTime() === employeeReservedEndTime.getTime())) ||
           (isBefore(startTime, employeeReservedStartTime) &&
