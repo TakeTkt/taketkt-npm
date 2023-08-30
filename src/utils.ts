@@ -433,8 +433,8 @@ export function getReservationTimes(
 
     // ? Check availability
     const isBlocked = blockedTimes.some(({ from_date_time, to_date_time }) => {
-      const blockedStartTime = parseISO(from_date_time!);
-      const blockedEndTime = parseISO(to_date_time!);
+      const blockedStartTime = convertToDate(from_date_time!);
+      const blockedEndTime = convertToDate(to_date_time!);
       return (
         ((isAfter(startTime, blockedStartTime) ||
           startTime.getTime() === blockedStartTime.getTime()) &&
@@ -446,10 +446,12 @@ export function getReservationTimes(
           isAfter(endTime, blockedEndTime))
       );
     });
+
+    // Check if the custom time is reserved
     const isReserved = reservedTimes.some(
       ({ from_date_time, to_date_time }) => {
-        const reservedStartTime = parseISO(from_date_time!);
-        const reservedEndTime = parseISO(to_date_time!);
+        const reservedStartTime = convertToDate(from_date_time!);
+        const reservedEndTime = convertToDate(to_date_time!);
         return (
           ((isAfter(startTime, reservedStartTime) ||
             startTime.getTime() === reservedStartTime.getTime()) &&
@@ -462,10 +464,13 @@ export function getReservationTimes(
         );
       }
     );
-    const isEmployeeBusy = employeeTimes.some(
-      ({ from_date_time, to_date_time }) => {
-        const employeeReservedStartTime = parseISO(from_date_time!);
-        const employeeReservedEndTime = parseISO(to_date_time!);
+
+    // Check if the custom time overlaps with employee times if required
+    const isEmployeeBusy =
+      isRequireEmployee &&
+      employeeTimes.some(({ from_date_time, to_date_time }) => {
+        const employeeReservedStartTime = convertToDate(from_date_time!);
+        const employeeReservedEndTime = convertToDate(to_date_time!);
         return (
           ((isAfter(startTime, employeeReservedStartTime) ||
             startTime.getTime() === employeeReservedStartTime.getTime()) &&
@@ -476,21 +481,13 @@ export function getReservationTimes(
           (isBefore(startTime, employeeReservedStartTime) &&
             isAfter(endTime, employeeReservedEndTime))
         );
-      }
-    );
-    if (isRequireEmployee) {
-      return (
-        isWithinWorkingShift &&
-        isWithinReservationTime &&
-        !isBlocked &&
-        !isEmployeeBusy
-      );
-    }
+      });
+
+    // Check if the custom time is available
     return (
       isWithinWorkingShift &&
       isWithinReservationTime &&
-      !isBlocked &&
-      !isReserved
+      !(isBlocked || isReserved || isEmployeeBusy)
     );
   });
 
@@ -532,4 +529,78 @@ export function getReservationTimes(
 
   // = Return the list
   return list;
+}
+
+export function isTimeAvailable(
+  customTime: { from: Date; to: Date },
+  blockedTimes: {
+    from_date_time: string | null;
+    to_date_time: string | null;
+  }[],
+  reservedTimes: {
+    from_date_time: string | null;
+    to_date_time: string | null;
+  }[],
+  isRequireEmployee = false,
+  employeeTimes: {
+    from_date_time: string | null;
+    to_date_time: string | null;
+  }[] = []
+): boolean {
+  // Convert custom time to Date objects
+  const customStartTime = convertToDate(customTime.from);
+  const customEndTime = convertToDate(customTime.to);
+
+  // Check if the custom time is blocked
+  const isBlocked = blockedTimes.some(({ from_date_time, to_date_time }) => {
+    const blockedStartTime = convertToDate(from_date_time!);
+    const blockedEndTime = convertToDate(to_date_time!);
+    return (
+      ((isAfter(customStartTime, blockedStartTime) ||
+        customStartTime.getTime() === blockedStartTime.getTime()) &&
+        isBefore(customStartTime, blockedEndTime)) ||
+      (isAfter(customEndTime, blockedStartTime) &&
+        (isBefore(customEndTime, blockedEndTime) ||
+          customEndTime.getTime() === blockedEndTime.getTime())) ||
+      (isBefore(customStartTime, blockedStartTime) &&
+        isAfter(customEndTime, blockedEndTime))
+    );
+  });
+
+  // Check if the custom time is reserved
+  const isReserved = reservedTimes.some(({ from_date_time, to_date_time }) => {
+    const reservedStartTime = convertToDate(from_date_time!);
+    const reservedEndTime = convertToDate(to_date_time!);
+    return (
+      ((isAfter(customStartTime, reservedStartTime) ||
+        customStartTime.getTime() === reservedStartTime.getTime()) &&
+        isBefore(customStartTime, reservedEndTime)) ||
+      (isAfter(customEndTime, reservedStartTime) &&
+        (isBefore(customEndTime, reservedEndTime) ||
+          customEndTime.getTime() === reservedEndTime.getTime())) ||
+      (isBefore(customStartTime, reservedStartTime) &&
+        isAfter(customEndTime, reservedEndTime))
+    );
+  });
+
+  // Check if the custom time overlaps with employee times if required
+  const isEmployeeBusy =
+    isRequireEmployee &&
+    employeeTimes.some(({ from_date_time, to_date_time }) => {
+      const employeeReservedStartTime = convertToDate(from_date_time!);
+      const employeeReservedEndTime = convertToDate(to_date_time!);
+      return (
+        ((isAfter(customStartTime, employeeReservedStartTime) ||
+          customStartTime.getTime() === employeeReservedStartTime.getTime()) &&
+          isBefore(customStartTime, employeeReservedEndTime)) ||
+        (isAfter(customEndTime, employeeReservedStartTime) &&
+          (isBefore(customEndTime, employeeReservedEndTime) ||
+            customEndTime.getTime() === employeeReservedEndTime.getTime())) ||
+        (isBefore(customStartTime, employeeReservedStartTime) &&
+          isAfter(customEndTime, employeeReservedEndTime))
+      );
+    });
+
+  // Check if the custom time is available
+  return !(isBlocked || isReserved || isEmployeeBusy);
 }
