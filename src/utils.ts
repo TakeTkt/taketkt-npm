@@ -1,17 +1,17 @@
+import utcToZonedTime from "date-fns-tz/utcToZonedTime";
 import add from "date-fns/add";
+import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
 import endOfDay from "date-fns/endOfDay";
+import format from "date-fns/format";
+import intervalToDuration from "date-fns/intervalToDuration";
 import isAfter from "date-fns/isAfter";
 import isBefore from "date-fns/isBefore";
 import isSameDay from "date-fns/isSameDay";
-import parseISO from "date-fns/parseISO";
-import startOfDay from "date-fns/startOfDay";
-import utcToZonedTime from "date-fns-tz/utcToZonedTime";
-import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
-import format from "date-fns/format";
-import intervalToDuration from "date-fns/intervalToDuration";
 import isWithinInterval from "date-fns/isWithinInterval";
 import parse from "date-fns/parse";
+import parseISO from "date-fns/parseISO";
 import set from "date-fns/set";
+import startOfDay from "date-fns/startOfDay";
 import isEqualWith from "lodash.isequalwith";
 import {
   License,
@@ -295,7 +295,8 @@ export function licenseValidity(
   is_trial?: License["is_trial"],
   tickets_count?: { total: number; used: number } | null
 ) {
-  const is_expired = isBefore(new Date(), convertToDate(expire_date));
+  const is_expired =
+    convertToDate(expire_date).getTime() < new Date().getTime();
   const diff = differenceInCalendarDays(convertToDate(expire_date), new Date());
   const isAlert =
     (is_trial ? 3 : 14) >= diff ||
