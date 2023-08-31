@@ -295,6 +295,7 @@ export function licenseValidity(
   is_trial?: License["is_trial"],
   tickets_count?: { total: number; used: number } | null
 ) {
+  const is_expired = isBefore(new Date(), convertToDate(expire_date));
   const diff = differenceInCalendarDays(convertToDate(expire_date), new Date());
   const isAlert =
     (is_trial ? 3 : 14) >= diff ||
@@ -305,7 +306,7 @@ export function licenseValidity(
   return {
     diff,
     isEnded:
-      diff <= 0 || (!!tickets_count && isLimitByTicketEnded(tickets_count)),
+      is_expired || (!!tickets_count && isLimitByTicketEnded(tickets_count)),
     isAlert,
     isHighAlert,
   };
