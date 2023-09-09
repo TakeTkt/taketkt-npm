@@ -1,6 +1,6 @@
 import type { Decimal } from "@prisma/client/runtime";
-import type { FieldValue, GeoPoint, Timestamp } from "firebase/firestore";
-import { Currency } from "./currencies";
+import type { GeoPoint, Timestamp } from "firebase/firestore";
+import type { Currency } from "./currencies";
 import type { TimeZones } from "./timezones";
 
 export type ValueOf<T> = T[keyof T];
@@ -205,7 +205,7 @@ export type Waiting = {
   currency?: Currency;
   customer_did_not_come?: boolean;
   cancel_note?: string;
-  updates?: TicketUpdate[] | FieldValue;
+  updates?: TicketUpdate[];
   integrations?: {
     [integration: string]: {
       posOrderId: string;
@@ -249,7 +249,7 @@ export type Reservation = {
   reservation_number?: string;
   customer_did_not_come?: boolean;
   cancel_note?: string;
-  updates?: TicketUpdate[] | FieldValue;
+  updates?: TicketUpdate[];
   require_confirmation?: boolean;
   is_confirmed?: boolean;
   integrations?: {
@@ -334,7 +334,7 @@ export type Integration = {
     external_branch_id?: string;
   }[];
   external_store_id: string;
-  number_of_invoices?: number | FieldValue;
+  number_of_invoices?: number;
 };
 
 export type SupportTicket = {
