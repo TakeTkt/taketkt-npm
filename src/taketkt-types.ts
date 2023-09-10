@@ -105,6 +105,9 @@ export type Branch = {
   show_whatsapp_contact?: boolean;
   phone_number?: string;
   logo?: string;
+  auto_done_tickets?: boolean;
+  auto_cancel_tickets?: boolean;
+  auto_cancel_or_done_time?: string;
   socialMedia?: {
     instagram?: string;
     snapchat?: string;
