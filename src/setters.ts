@@ -56,7 +56,7 @@ export function setNewCustomer(customer: Partial<Customer> | null): Customer {
   } as Customer;
 }
 
-export function setNewStore(store?: Partial<Store>) {
+export function setNewStore(store?: Partial<Store>): Store {
   return {
     name_en: "",
     name_ar: "",
@@ -79,10 +79,10 @@ export function setNewStore(store?: Partial<Store>) {
       phone_number: "",
     },
     ...store,
-  } as Store;
+  };
 }
 
-export function setNewBranch(branch?: Partial<Branch> | null) {
+export function setNewBranch(branch?: Partial<Branch> | null): Branch {
   return {
     name_en: "",
     name_ar: "",
@@ -103,13 +103,13 @@ export function setNewBranch(branch?: Partial<Branch> | null) {
     created_date: new Date(),
     store_url: "",
     ...(branch ?? {}),
-  } as Branch;
+  };
 }
 
 export function setNewService(
   service?: Partial<Service> | null,
   branch?: Branch
-) {
+): Service {
   const today = getTodaysName();
   const working_shifts = branch?.working_shifts;
 
@@ -141,15 +141,16 @@ export function setNewService(
       from: working_shifts?.[today]?.[0]?.from ?? "00:00",
       to: working_shifts?.[today]?.[0]?.to ?? "23:59",
     },
-    duration: "01:00",
     enable_max_days_ahead: false,
     max_days_ahead: 60,
+    employees: [],
+    durations: [],
     ...obj,
     ...(service ?? {}),
-  } as Service;
+  };
 }
 
-export function setNewRole(role?: Partial<EmployeeRole> | null) {
+export function setNewRole(role?: Partial<EmployeeRole> | null): EmployeeRole {
   return {
     role_name: "",
     store_id: "",
@@ -157,14 +158,14 @@ export function setNewRole(role?: Partial<EmployeeRole> | null) {
     is_admin: false,
     is_default: false,
     ...(role ?? {}),
-  } as EmployeeRole;
+  };
 }
 
 export function setNewStoreAccess(
   access?: Partial<UserAccess> | null,
   store_id?: string,
   branches_ids?: string[]
-) {
+): UserAccess {
   let obj = {} as UserAccess;
 
   if (store_id) {
@@ -194,7 +195,7 @@ export function setNewWaiting(
   store?: Store | null,
   branch?: Branch,
   user?: User
-) {
+): Waiting {
   return {
     store_id: store?.store_id,
     store_name_en: store?.name_en,
@@ -218,7 +219,7 @@ export function setNewWaiting(
     currency: store?.currency ?? undefined,
     vat_percentage: store?.vat_percentage ?? 0,
     ...waiting,
-  } as Waiting;
+  };
 }
 
 export function setNewReservation(
@@ -226,7 +227,7 @@ export function setNewReservation(
   store?: Store | null,
   branch?: Branch,
   user?: User
-) {
+): Reservation {
   return {
     store_id: store?.store_id,
     store_name_en: store?.name_en,
@@ -252,7 +253,7 @@ export function setNewReservation(
     currency: store?.currency ?? undefined,
     vat_percentage: store?.vat_percentage ?? 0,
     ...reservation,
-  } as Reservation;
+  };
 }
 
 export function setBranchPolicy(

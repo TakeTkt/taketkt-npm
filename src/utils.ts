@@ -213,6 +213,29 @@ export function jsonParse<T>(str: string | null | undefined) {
   }
 }
 
+/**
+ * Converts a time string in the format of "HH:mm" to minutes
+ * @param timeString - The time string to convert
+ * @returns The time in minutes
+ */
+export function timeStringToMinutes(timeString: string) {
+  const [hours, minutes] = timeString.split(":");
+  return parseInt(hours, 10) * 60 + parseInt(minutes, 10);
+}
+
+/**
+ * Converts a time in minutes to a time string in the format of "HH:mm"
+ * @param minutes - The time in minutes to convert
+ * @returns The time string in the format of "HH:mm"
+ */
+export function minutesToTimeString(minutes: number) {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  return `${hours.toString().padStart(2, "0")}:${remainingMinutes
+    .toString()
+    .padStart(2, "0")}`;
+}
+
 export const WeekDays = [
   "Sunday",
   "Monday",
@@ -315,7 +338,7 @@ export function licenseValidity(
 
 export function getReservationTimes(
   selectedDate: Date,
-  duration: string,
+  duration: number,
   workingShifts: WorkingShifts,
   reservationTime: Service["reservation_time"],
   blockedTimes: {
@@ -336,7 +359,6 @@ export function getReservationTimes(
   const now = new Date();
   const startTime = add(startOfDay(selectedDate), { hours: 3 });
   const endTime = add(endOfDay(selectedDate), { hours: 3 });
-  const [hours, minutes] = duration.split(":");
 
   let availableTimes: { start: string; end: string }[] = [];
 
@@ -348,8 +370,7 @@ export function getReservationTimes(
   ) {
     const start = format(currentSlot, "HH:mm");
     const addedDate = add(currentSlot, {
-      hours: Number(hours),
-      minutes: Number(minutes),
+      minutes: Number(duration),
     });
     const end = format(addedDate, "HH:mm");
     currentSlot = addedDate;

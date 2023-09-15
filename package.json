@@ -12,7 +12,8 @@
     "build:umd": "webpack",
     "clean:cjs": "rimraf lib",
     "clean:esm": "rimraf esm",
-    "release": "yarn build && release-it"
+    "release": "yarn build && release-it",
+    "release:beta": "yarn build && release-it --preRelease=beta"
   },
   "repository": "https://github.com/TakeTkt/taketkt-npm.git",
   "author": "Mustafa Alsihati <51824138+MustafaAlsihati@users.noreply.github.com>",

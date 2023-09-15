@@ -133,7 +133,6 @@ export type Service = {
     from: string;
     to: string;
   };
-  duration?: string;
   not_active?: boolean;
   hide?: boolean;
   number_of_slots?: number;
@@ -146,7 +145,13 @@ export type Service = {
   max_days_ahead?: number;
   require_employee?: boolean;
   integrations?: ServiceIntegrations;
-  employees?: DashboardUser[];
+  employees: DashboardUser[];
+  durations: ServiceDuration[];
+};
+
+export type ServiceDuration = {
+  id: number;
+  duration: number;
 };
 
 export type ServiceIntegrations = {
