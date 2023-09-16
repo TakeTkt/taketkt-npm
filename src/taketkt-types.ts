@@ -152,6 +152,7 @@ export type Service = {
 export type ServiceDuration = {
   id: number;
   duration: number;
+  price_increase: number;
 };
 
 export type ServiceIntegrations = {
