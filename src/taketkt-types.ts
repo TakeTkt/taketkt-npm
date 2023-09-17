@@ -151,8 +151,9 @@ export type Service = {
 
 export type ServiceDuration = {
   id: number;
+  service_id: string;
   duration: number;
-  price_increase: number;
+  price_increase: number | Decimal;
 };
 
 export type ServiceIntegrations = {
