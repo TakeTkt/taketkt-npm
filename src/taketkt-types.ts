@@ -154,6 +154,7 @@ export type ServiceDuration = {
   service_id: string;
   duration: number;
   price_increase: number | Decimal;
+  show_in_app: boolean;
 };
 
 export type ServiceIntegrations = {
@@ -226,6 +227,7 @@ export type Waiting = {
     };
   };
   vat_percentage?: number;
+  duration?: number | null;
 };
 
 export type Reservation = {
@@ -272,6 +274,7 @@ export type Reservation = {
     };
   };
   vat_percentage?: number;
+  duration?: number | null;
 };
 
 export type BlockedTimes = {

@@ -7,6 +7,7 @@ import {
   EmployeeRole,
   Reservation,
   Service,
+  ServiceDuration,
   Store,
   User,
   UserAccess,
@@ -218,6 +219,7 @@ export function setNewWaiting(
     price: Number(waiting?.price ?? 0),
     currency: store?.currency ?? undefined,
     vat_percentage: store?.vat_percentage ?? 0,
+    duration: null,
     ...waiting,
   };
 }
@@ -252,6 +254,7 @@ export function setNewReservation(
     price: Number(reservation?.price ?? 0),
     currency: store?.currency ?? undefined,
     vat_percentage: store?.vat_percentage ?? 0,
+    duration: null,
     ...reservation,
   };
 }
@@ -269,4 +272,16 @@ export function setBranchPolicy(
     active: true,
     ...(obj ?? {}),
   };
+}
+
+export function setNewDuration(
+  obj?: Partial<ServiceDuration> | null
+): ServiceDuration {
+  return {
+    service_id: "",
+    duration: 60,
+    price_increase: 0,
+    show_in_app: true,
+    ...(obj ?? {}),
+  } as ServiceDuration;
 }
