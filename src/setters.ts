@@ -13,7 +13,7 @@ import {
   UserAccess,
   Waiting,
 } from "./taketkt-types";
-import { getTodaysName } from "./utils";
+import { getTodaysName, toNumber } from "./utils";
 
 export function setNewUser(user: Partial<User>): User {
   return {
@@ -145,9 +145,9 @@ export function setNewService(
     enable_max_days_ahead: false,
     max_days_ahead: 60,
     employees: [],
-    durations: [],
     ...obj,
     ...(service ?? {}),
+    durations: (service?.durations ?? []).map(setNewDuration),
   };
 }
 
@@ -279,9 +279,9 @@ export function setNewDuration(
 ): ServiceDuration {
   return {
     service_id: "",
-    duration: 60,
-    price_increase: 0,
     show_in_app: true,
     ...(obj ?? {}),
+    duration: toNumber(obj?.duration ?? 60),
+    price_increase: toNumber(obj?.price_increase ?? 0),
   } as ServiceDuration;
 }
