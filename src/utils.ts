@@ -387,130 +387,66 @@ export function getReservationTimes(
     availableTimes.push({ start, end });
   }
 
-  // * Add the times for the next working shift if it's between 00:00 and 03:00
-  const currentHour = now.getHours();
-  if (currentHour >= 0 && currentHour < 3) {
-    const nextDay = add(selectedDate, { days: 1 });
-    const nextWorkingShift = [
-      ...(workingShifts?.[format(selectedDate, "EEEE")] ?? []),
-      ...(workingShifts?.[format(nextDay, "EEEE")] ?? []),
-    ].find(({ from }) => {
-      const shiftStart = parseISO(
-        `${format(selectedDate, "yyyy-MM-dd")}T${from}`
-      );
-      return isAfter(now, shiftStart);
-    });
-    if (nextWorkingShift) {
-      const { from, to } = nextWorkingShift;
-      availableTimes.push({ start: from, end: to });
-    }
-  }
-
   // * Filter out time slots that overlap with reserved or blocked time slots,
   // * are outside of working shifts, or are outside of service reservation time
-  availableTimes = availableTimes.filter(({ start, end }) => {
+  availableTimes = availableTimes.filter(({ start }) => {
     let startTime = set(selectedDate, {
       hours: +start.split(":")[0],
       minutes: +start.split(":")[1],
     });
-    let endTime = set(selectedDate, {
-      hours: +end.split(":")[0],
-      minutes: +end.split(":")[1],
-    });
+
+    // ? Check if starting hour is less that 3 AM then add one day:
+    if (startTime.getHours() < 3) {
+      startTime = add(startTime, { days: 1 });
+    }
 
     // ? Check if the time slot is within the working shift
     const nextDay = add(selectedDate, { days: 1 });
-    const isWithinWorkingShift = [
-      ...(workingShifts?.[format(selectedDate, "EEEE")] ?? []),
-      ...(workingShifts?.[format(nextDay, "EEEE")] ?? []),
-    ].some(({ from, to }) => {
-      const start = parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${from}`);
-      const end = parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${to}`);
-      return (
-        (isAfter(startTime, start) ||
-          startTime.getTime() === start.getTime()) &&
-        (isBefore(endTime, end) || endTime.getTime() === end.getTime())
+    const isWithinWorkingShift =
+      [...(workingShifts?.[format(selectedDate, "EEEE")] ?? [])].some(
+        ({ from, to }) => {
+          const start = parseISO(
+            `${format(selectedDate, "yyyy-MM-dd")}T${from}`
+          );
+          const end = parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${to}`);
+          return isWithinInterval(startTime, {
+            start,
+            end,
+          });
+        }
+      ) ||
+      [...(workingShifts?.[format(nextDay, "EEEE")] ?? [])].some(
+        ({ from, to }) => {
+          const start = parseISO(`${format(nextDay, "yyyy-MM-dd")}T${from}`);
+          const end = parseISO(`${format(nextDay, "yyyy-MM-dd")}T${to}`);
+          return isWithinInterval(startTime, {
+            start,
+            end,
+          });
+        }
       );
-    });
 
     // ? Check if the time slot is within the service reservation time
-    const isWithinReservationTime =
-      (isAfter(
-        startTime,
-        parseISO(
-          `${format(selectedDate, "yyyy-MM-dd")}T${reservationTime?.from}`
-        )
-      ) ||
-        startTime.getTime() ===
-          parseISO(
-            `${format(selectedDate, "yyyy-MM-dd")}T${reservationTime?.from}`
-          ).getTime()) &&
-      (isBefore(
-        endTime,
-        parseISO(`${format(selectedDate, "yyyy-MM-dd")}T${reservationTime?.to}`)
-      ) ||
-        endTime.getTime() ===
-          parseISO(
-            `${format(selectedDate, "yyyy-MM-dd")}T${reservationTime?.to}`
-          ).getTime());
-
-    // ? Check availability
-    const isBlocked = blockedTimes.some(({ from_date_time, to_date_time }) => {
-      const blockedStartTime = convertToDate(from_date_time!);
-      const blockedEndTime = convertToDate(to_date_time!);
-      return (
-        ((isAfter(startTime, blockedStartTime) ||
-          startTime.getTime() === blockedStartTime.getTime()) &&
-          isBefore(startTime, blockedEndTime)) ||
-        (isAfter(endTime, blockedStartTime) &&
-          (isBefore(endTime, blockedEndTime) ||
-            endTime.getTime() === blockedEndTime.getTime())) ||
-        (isBefore(startTime, blockedStartTime) &&
-          isAfter(endTime, blockedEndTime))
-      );
+    const isWithinReservationTime = isWithinInterval(startTime, {
+      start: parseISO(
+        `${format(startTime, "yyyy-MM-dd")}T${reservationTime?.from}`
+      ),
+      end: parseISO(
+        `${format(startTime, "yyyy-MM-dd")}T${reservationTime?.to}`
+      ),
     });
-
-    // Check if the custom time is reserved
-    const isReserved = reservedTimes.some(
-      ({ from_date_time, to_date_time }) => {
-        const reservedStartTime = convertToDate(from_date_time!);
-        const reservedEndTime = convertToDate(to_date_time!);
-        return (
-          ((isAfter(startTime, reservedStartTime) ||
-            startTime.getTime() === reservedStartTime.getTime()) &&
-            isBefore(startTime, reservedEndTime)) ||
-          (isAfter(endTime, reservedStartTime) &&
-            (isBefore(endTime, reservedEndTime) ||
-              endTime.getTime() === reservedEndTime.getTime())) ||
-          (isBefore(startTime, reservedStartTime) &&
-            isAfter(endTime, reservedEndTime))
-        );
-      }
-    );
-
-    // Check if the custom time overlaps with employee times if required
-    const isEmployeeBusy =
-      isRequireEmployee &&
-      employeeTimes.some(({ from_date_time, to_date_time }) => {
-        const employeeReservedStartTime = convertToDate(from_date_time!);
-        const employeeReservedEndTime = convertToDate(to_date_time!);
-        return (
-          ((isAfter(startTime, employeeReservedStartTime) ||
-            startTime.getTime() === employeeReservedStartTime.getTime()) &&
-            isBefore(startTime, employeeReservedEndTime)) ||
-          (isAfter(endTime, employeeReservedStartTime) &&
-            (isBefore(endTime, employeeReservedEndTime) ||
-              endTime.getTime() === employeeReservedEndTime.getTime())) ||
-          (isBefore(startTime, employeeReservedStartTime) &&
-            isAfter(endTime, employeeReservedEndTime))
-        );
-      });
 
     // Check if the custom time is available
     return (
       isWithinWorkingShift &&
       isWithinReservationTime &&
-      !(isBlocked || isReserved || isEmployeeBusy)
+      !isTimeBusy(
+        reservedTimes,
+        blockedTimes,
+        employeeTimes,
+        startTime,
+        isRequireEmployee
+      )
     );
   });
 
@@ -570,60 +506,63 @@ export function isTimeAvailable(
     to_date_time: string | null;
   }[] = []
 ): boolean {
-  // Convert custom time to Date objects
-  const customStartTime = convertToDate(customTime.from);
-  const customEndTime = convertToDate(customTime.to);
+  // = Check if the custom time is available
+  return !isTimeBusy(
+    reservedTimes,
+    blockedTimes,
+    employeeTimes,
+    convertToDate(customTime.from),
+    isRequireEmployee
+  );
+}
 
-  // Check if the custom time is blocked
-  const isBlocked = blockedTimes.some(({ from_date_time, to_date_time }) => {
-    const blockedStartTime = convertToDate(from_date_time!);
-    const blockedEndTime = convertToDate(to_date_time!);
-    return (
-      ((isAfter(customStartTime, blockedStartTime) ||
-        customStartTime.getTime() === blockedStartTime.getTime()) &&
-        isBefore(customStartTime, blockedEndTime)) ||
-      (isAfter(customEndTime, blockedStartTime) &&
-        (isBefore(customEndTime, blockedEndTime) ||
-          customEndTime.getTime() === blockedEndTime.getTime())) ||
-      (isBefore(customStartTime, blockedStartTime) &&
-        isAfter(customEndTime, blockedEndTime))
-    );
-  });
-
-  // Check if the custom time is reserved
+export function isTimeBusy(
+  reservedTimes: {
+    from_date_time: string | null;
+    to_date_time: string | null;
+  }[],
+  blockedTimes: {
+    from_date_time: string | null;
+    to_date_time: string | null;
+  }[],
+  employeeTimes: {
+    from_date_time: string | null;
+    to_date_time: string | null;
+  }[],
+  start: Date,
+  isRequireEmployee = false
+) {
+  // ? Check if the custom time is reserved
   const isReserved = reservedTimes.some(({ from_date_time, to_date_time }) => {
     const reservedStartTime = convertToDate(from_date_time!);
     const reservedEndTime = convertToDate(to_date_time!);
-    return (
-      ((isAfter(customStartTime, reservedStartTime) ||
-        customStartTime.getTime() === reservedStartTime.getTime()) &&
-        isBefore(customStartTime, reservedEndTime)) ||
-      (isAfter(customEndTime, reservedStartTime) &&
-        (isBefore(customEndTime, reservedEndTime) ||
-          customEndTime.getTime() === reservedEndTime.getTime())) ||
-      (isBefore(customStartTime, reservedStartTime) &&
-        isAfter(customEndTime, reservedEndTime))
-    );
+    return isWithinInterval(start, {
+      start: reservedStartTime,
+      end: reservedEndTime,
+    });
   });
 
-  // Check if the custom time overlaps with employee times if required
+  const isBlocked = blockedTimes.some(({ from_date_time, to_date_time }) => {
+    const blockedStartTime = convertToDate(from_date_time!);
+    const blockedEndTime = convertToDate(to_date_time!);
+    return isWithinInterval(start, {
+      start: blockedStartTime,
+      end: blockedEndTime,
+    });
+  });
+
+  // ? Check if the custom time overlaps with employee times if required
   const isEmployeeBusy =
     isRequireEmployee &&
     employeeTimes.some(({ from_date_time, to_date_time }) => {
       const employeeReservedStartTime = convertToDate(from_date_time!);
       const employeeReservedEndTime = convertToDate(to_date_time!);
-      return (
-        ((isAfter(customStartTime, employeeReservedStartTime) ||
-          customStartTime.getTime() === employeeReservedStartTime.getTime()) &&
-          isBefore(customStartTime, employeeReservedEndTime)) ||
-        (isAfter(customEndTime, employeeReservedStartTime) &&
-          (isBefore(customEndTime, employeeReservedEndTime) ||
-            customEndTime.getTime() === employeeReservedEndTime.getTime())) ||
-        (isBefore(customStartTime, employeeReservedStartTime) &&
-          isAfter(customEndTime, employeeReservedEndTime))
-      );
+      return isWithinInterval(start, {
+        start: employeeReservedStartTime,
+        end: employeeReservedEndTime,
+      });
     });
 
-  // Check if the custom time is available
-  return !(isBlocked || isReserved || isEmployeeBusy);
+  // = Check if the custom time is available
+  return isBlocked || isReserved || isEmployeeBusy;
 }
