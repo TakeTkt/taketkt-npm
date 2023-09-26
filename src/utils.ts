@@ -8,7 +8,6 @@ import isBefore from 'date-fns/isBefore';
 import isSameDay from 'date-fns/isSameDay';
 import isWithinInterval from 'date-fns/isWithinInterval';
 import parse from 'date-fns/parse';
-import parseISO from 'date-fns/parseISO';
 import set from 'date-fns/set';
 import startOfDay from 'date-fns/startOfDay';
 import isEqualWith from 'lodash.isequalwith';
@@ -356,8 +355,14 @@ export function getReservationTimes(
   ignoreCurrentTime = false,
 ) {
   const now = new Date();
-  const startTime = add(startOfDay(selectedDate), { hours: 3 });
-  const endTime = add(endOfDay(selectedDate), { hours: 3 });
+  const startTime = set(add(startOfDay(selectedDate), { hours: 3 }), {
+    seconds: 0,
+    milliseconds: 0,
+  });
+  const endTime = set(add(endOfDay(selectedDate), { hours: 3 }), {
+    seconds: 0,
+    milliseconds: 0,
+  });
 
   let availableTimes: { start: string; end: string }[] = [];
 
@@ -371,7 +376,7 @@ export function getReservationTimes(
     const addedDate = add(currentSlot, {
       minutes: Number(duration),
     });
-    const end = format(addedDate, 'HH:mm');
+    let end = format(addedDate, 'HH:mm');
     currentSlot = addedDate;
 
     // ? Check if the time slot is after the current time
@@ -392,10 +397,14 @@ export function getReservationTimes(
     let startTime = set(selectedDate, {
       hours: +start.split(':')[0],
       minutes: +start.split(':')[1],
+      seconds: 0,
+      milliseconds: 0,
     });
     let endTime = set(selectedDate, {
       hours: +end.split(':')[0],
       minutes: +end.split(':')[1],
+      seconds: 0,
+      milliseconds: 0,
     });
 
     // ? Check if starting hour is less that 3 AM then add one day:
@@ -405,16 +414,30 @@ export function getReservationTimes(
     if (endTime.getHours() < 3) {
       endTime = add(endTime, { days: 1 });
     }
+    if (endTime.getTime() < startTime.getTime()) {
+      endTime = add(endTime, { days: 1 });
+    }
 
     // ? Check if the time slot is within the working shift
     const nextDay = add(selectedDate, { days: 1 });
     const isWithinWorkingShift =
       [...(workingShifts?.[format(selectedDate, 'EEEE')] ?? [])].some(
         ({ from, to }) => {
-          const start = parseISO(
-            `${format(selectedDate, 'yyyy-MM-dd')}T${from}`,
-          );
-          const end = parseISO(`${format(selectedDate, 'yyyy-MM-dd')}T${to}`);
+          const start = set(selectedDate, {
+            hours: +from.split(':')[0],
+            minutes: +from.split(':')[1],
+            seconds: 0,
+            milliseconds: 0,
+          });
+          let end = set(selectedDate, {
+            hours: +to.split(':')[0],
+            minutes: +to.split(':')[1],
+            seconds: 0,
+            milliseconds: 0,
+          });
+          if (format(end, 'HH:mm') === '23:59') {
+            end = add(end, { minutes: 1 });
+          }
           return (
             isWithinInterval(startTime, { start, end }) &&
             isWithinInterval(endTime, { start, end })
@@ -423,8 +446,19 @@ export function getReservationTimes(
       ) ||
       [...(workingShifts?.[format(nextDay, 'EEEE')] ?? [])].some(
         ({ from, to }) => {
-          const start = parseISO(`${format(nextDay, 'yyyy-MM-dd')}T${from}`);
-          const end = parseISO(`${format(nextDay, 'yyyy-MM-dd')}T${to}`);
+          const start = set(selectedDate, {
+            hours: +from.split(':')[0],
+            minutes: +from.split(':')[1],
+            seconds: 0,
+          });
+          let end = set(selectedDate, {
+            hours: +to.split(':')[0],
+            minutes: +to.split(':')[1],
+            seconds: 0,
+          });
+          if (format(end, 'HH:mm') === '23:59') {
+            end = add(end, { minutes: 1 });
+          }
           return (
             isWithinInterval(startTime, { start, end }) &&
             isWithinInterval(endTime, { start, end })
@@ -433,25 +467,22 @@ export function getReservationTimes(
       );
 
     // ? Check if the time slot is within the service reservation time
-    const isWithinReservationTime =
-      isWithinInterval(startTime, {
-        start: parseISO(
-          `${format(startTime, 'yyyy-MM-dd')}T${reservationTime?.from}`,
-        ),
-        end: parseISO(
-          `${format(startTime, 'yyyy-MM-dd')}T${reservationTime?.to}`,
-        ),
-      }) &&
-      isWithinInterval(endTime, {
-        start: parseISO(
-          `${format(endTime, 'yyyy-MM-dd')}T${reservationTime?.from}`,
-        ),
-        end: parseISO(
-          `${format(endTime, 'yyyy-MM-dd')}T${reservationTime?.to}`,
-        ),
-      });
+    const isWithinReservationTime = isWithinInterval(selectedDate, {
+      start: set(selectedDate, {
+        hours: +reservationTime!.from!.split(':')[0],
+        minutes: +reservationTime!.from!.split(':')[1],
+        seconds: 0,
+        milliseconds: 0,
+      }),
+      end: set(selectedDate, {
+        hours: +reservationTime!.to!.split(':')[0],
+        minutes: +reservationTime!.to!.split(':')[1],
+        seconds: 0,
+        milliseconds: 0,
+      }),
+    });
 
-    // Check if the custom time is available
+    // = Check if the custom time is available
     return (
       isWithinWorkingShift &&
       isWithinReservationTime &&
@@ -469,10 +500,10 @@ export function getReservationTimes(
   // * Format the available times
   let list = availableTimes.map(({ start, end }) => {
     let from = new Date(
-      selectedDate.setHours(+start.split(':')[0], +start.split(':')[1], 0),
+      selectedDate.setHours(+start.split(':')[0], +start.split(':')[1], 0, 0),
     );
     let to = new Date(
-      selectedDate.setHours(+end.split(':')[0], +end.split(':')[1], 0),
+      selectedDate.setHours(+end.split(':')[0], +end.split(':')[1], 0, 0),
     );
 
     // ? if time is past midnight then add 1 day
@@ -552,34 +583,74 @@ export function isTimeBusy(
 ) {
   // ? Check if the custom time is reserved
   const isReserved = reservedTimes.some(({ from_date_time, to_date_time }) => {
-    const reservedStartTime = convertToDate(from_date_time!);
-    const reservedEndTime = convertToDate(to_date_time!);
-    return (
-      (isWithinInterval(start, {
+    const reservedStartTime = set(convertToDate(from_date_time!), {
+      seconds: 0,
+      milliseconds: 0,
+    });
+    const reservedEndTime = set(convertToDate(to_date_time!), {
+      seconds: 0,
+      milliseconds: 0,
+    });
+
+    const busyWithinReservedTime =
+      isWithinInterval(start, {
         start: reservedStartTime,
         end: reservedEndTime,
       }) ||
-        isWithinInterval(end, {
-          start: reservedStartTime,
-          end: reservedEndTime,
-        })) &&
+      isWithinInterval(end, {
+        start: reservedStartTime,
+        end: reservedEndTime,
+      });
+
+    const busyWithinPeriod =
+      isWithinInterval(reservedStartTime, {
+        start: convertToDate(start),
+        end: convertToDate(end),
+      }) ||
+      isWithinInterval(reservedEndTime, {
+        start: convertToDate(start),
+        end: convertToDate(end),
+      });
+
+    return (
+      (busyWithinReservedTime || busyWithinPeriod) &&
       start.getTime() !== reservedEndTime.getTime() &&
       end.getTime() !== reservedStartTime.getTime()
     );
   });
 
   const isBlocked = blockedTimes.some(({ from_date_time, to_date_time }) => {
-    const blockedStartTime = convertToDate(from_date_time!);
-    const blockedEndTime = convertToDate(to_date_time!);
-    return (
-      (isWithinInterval(start, {
+    const blockedStartTime = set(convertToDate(from_date_time!), {
+      seconds: 0,
+      milliseconds: 0,
+    });
+    const blockedEndTime = set(convertToDate(to_date_time!), {
+      seconds: 0,
+      milliseconds: 0,
+    });
+
+    const busyWithinReservedTime =
+      isWithinInterval(start, {
         start: blockedStartTime,
         end: blockedEndTime,
       }) ||
-        isWithinInterval(end, {
-          start: blockedStartTime,
-          end: blockedEndTime,
-        })) &&
+      isWithinInterval(end, {
+        start: blockedStartTime,
+        end: blockedEndTime,
+      });
+
+    const busyWithinPeriod =
+      isWithinInterval(blockedStartTime, {
+        start: convertToDate(start),
+        end: convertToDate(end),
+      }) ||
+      isWithinInterval(blockedEndTime, {
+        start: convertToDate(start),
+        end: convertToDate(end),
+      });
+
+    return (
+      (busyWithinReservedTime || busyWithinPeriod) &&
       start.getTime() !== blockedEndTime.getTime() &&
       end.getTime() !== blockedStartTime.getTime()
     );
@@ -589,17 +660,37 @@ export function isTimeBusy(
   const isEmployeeBusy =
     isRequireEmployee &&
     employeeTimes.some(({ from_date_time, to_date_time }) => {
-      const employeeReservedStartTime = convertToDate(from_date_time!);
-      const employeeReservedEndTime = convertToDate(to_date_time!);
-      return (
-        (isWithinInterval(start, {
+      const employeeReservedStartTime = set(convertToDate(from_date_time!), {
+        seconds: 0,
+        milliseconds: 0,
+      });
+      const employeeReservedEndTime = set(convertToDate(to_date_time!), {
+        seconds: 0,
+        milliseconds: 0,
+      });
+
+      const busyWithinReservedTime =
+        isWithinInterval(start, {
           start: employeeReservedStartTime,
           end: employeeReservedEndTime,
         }) ||
-          isWithinInterval(end, {
-            start: employeeReservedStartTime,
-            end: employeeReservedEndTime,
-          })) &&
+        isWithinInterval(end, {
+          start: employeeReservedStartTime,
+          end: employeeReservedEndTime,
+        });
+
+      const busyWithinPeriod =
+        isWithinInterval(employeeReservedStartTime, {
+          start: convertToDate(start),
+          end: convertToDate(end),
+        }) ||
+        isWithinInterval(employeeReservedEndTime, {
+          start: convertToDate(start),
+          end: convertToDate(end),
+        });
+
+      return (
+        (busyWithinReservedTime || busyWithinPeriod) &&
         start.getTime() !== employeeReservedEndTime.getTime() &&
         end.getTime() !== employeeReservedStartTime.getTime()
       );
