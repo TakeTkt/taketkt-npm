@@ -4,7 +4,6 @@ import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 import endOfDay from 'date-fns/endOfDay';
 import format from 'date-fns/format';
 import intervalToDuration from 'date-fns/intervalToDuration';
-import isAfter from 'date-fns/isAfter';
 import isBefore from 'date-fns/isBefore';
 import isSameDay from 'date-fns/isSameDay';
 import isWithinInterval from 'date-fns/isWithinInterval';
