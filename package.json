@@ -1,6 +1,6 @@
 {
   "name": "taketkt",
-  "version": "1.2.22",
+  "version": "1.3.0-beta.6",
   "description": "taketkt types, setters, validators, utilities, and generate functions that are used across taketkt projects",
   "main": "lib/index.js",
   "module": "esm/index.js",
@@ -12,7 +12,8 @@
     "build:umd": "webpack",
     "clean:cjs": "rimraf lib",
     "clean:esm": "rimraf esm",
-    "release": "yarn build && release-it"
+    "release": "yarn build && release-it",
+    "release:beta": "yarn build && release-it --preRelease=beta"
   },
   "repository": "https://github.com/TakeTkt/taketkt-npm.git",
   "author": "Mustafa Alsihati <51824138+MustafaAlsihati@users.noreply.github.com>",

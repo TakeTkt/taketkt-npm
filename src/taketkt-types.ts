@@ -1,7 +1,7 @@
-import type { Decimal } from "@prisma/client/runtime";
-import type { GeoPoint, Timestamp } from "firebase/firestore";
-import type { Currency } from "./currencies";
-import type { TimeZones } from "./timezones";
+import type { Decimal } from '@prisma/client/runtime';
+import type { GeoPoint } from 'firebase/firestore';
+import type { Currency } from './currencies';
+import type { TimeZones } from './timezones';
 
 export type ValueOf<T> = T[keyof T];
 export type TypeOf<T> = keyof T;
@@ -33,7 +33,7 @@ export type DashboardUser = {
   photo?: string | null;
   emailVerified?: boolean;
   phoneNumberVerified?: boolean;
-  gender?: "MALE" | "FEMALE";
+  gender?: 'MALE' | 'FEMALE';
   is_test?: boolean; // Test for taketkt devs
 };
 
@@ -51,13 +51,13 @@ export type UserAccess = {
 };
 
 export type Permissions =
-  | "ACCESS_DASHBOARD_PERMISSION"
-  | "VIEW_LANDING_PAGE_PERMISSION"
-  | "CUSTOMERS_PERMISSION"
-  | "SERVICES_PERMISSION"
-  | "EMPLOYEES_PERMISSION"
-  | "BRANCH_SETTINGS_PERMISSION"
-  | "VIEW_REPORTS_PERMISSION";
+  | 'ACCESS_DASHBOARD_PERMISSION'
+  | 'VIEW_LANDING_PAGE_PERMISSION'
+  | 'CUSTOMERS_PERMISSION'
+  | 'SERVICES_PERMISSION'
+  | 'EMPLOYEES_PERMISSION'
+  | 'BRANCH_SETTINGS_PERMISSION'
+  | 'VIEW_REPORTS_PERMISSION';
 
 export type Store = {
   name_en: string;
@@ -133,7 +133,6 @@ export type Service = {
     from: string;
     to: string;
   };
-  duration?: string;
   not_active?: boolean;
   hide?: boolean;
   number_of_slots?: number;
@@ -146,7 +145,16 @@ export type Service = {
   max_days_ahead?: number;
   require_employee?: boolean;
   integrations?: ServiceIntegrations;
-  employees?: DashboardUser[];
+  employees: DashboardUser[];
+  durations: ServiceDuration[];
+};
+
+export type ServiceDuration = {
+  id: number;
+  service_id: string;
+  duration: number;
+  price_increase: number | Decimal;
+  show_in_app: boolean;
 };
 
 export type ServiceIntegrations = {
@@ -176,8 +184,9 @@ export type Customer = {
 };
 
 export type TicketUpdate = {
-  type: "SENT" | "READY" | "CANCELED" | "SERVING" | "DONE" | "CONFIRMED";
-  time: Date | Timestamp;
+  type: 'SENT' | 'READY' | 'CANCELED' | 'SERVING' | 'DONE' | 'CONFIRMED';
+  time: Date;
+  is_auto_status_change?: boolean;
 };
 
 export type Waiting = {
@@ -192,7 +201,7 @@ export type Waiting = {
   email: string;
   country_code?: string;
   phone: string;
-  created_date?: Date | Timestamp;
+  created_date?: Date;
   note?: string;
   done: boolean;
   is_ready?: boolean;
@@ -219,6 +228,8 @@ export type Waiting = {
     };
   };
   vat_percentage?: number;
+  duration?: number | null;
+  occupancy?: number | null;
 };
 
 export type Reservation = {
@@ -233,9 +244,9 @@ export type Reservation = {
   email: string;
   country_code?: string;
   phone: string;
-  created_date?: Date | Timestamp;
-  from?: Date | Timestamp;
-  to?: Date | Timestamp;
+  created_date?: Date;
+  from?: Date;
+  to?: Date;
   note?: string;
   done: boolean;
   is_ready?: boolean;
@@ -265,6 +276,8 @@ export type Reservation = {
     };
   };
   vat_percentage?: number;
+  duration?: number | null;
+  occupancy?: number | null;
 };
 
 export type BlockedTimes = {
@@ -322,15 +335,17 @@ export type License = {
   start_date: Date;
   expire_date: Date;
   is_trial: boolean;
-  features: LicensePackage["features"];
+  features: LicensePackage['features'];
   is_test?: boolean; // Test for taketkt devs
   number_of_tickets?: number;
   number_of_used_tickets?: number;
+  email_sent?: boolean;
+  disabled?: boolean;
 };
 
 export type Integration = {
   integration_id: number;
-  id: "lazywait" | "moyasar"; // 'lazywait' | 'foodics' | etc...
+  id: 'lazywait' | 'moyasar'; // 'lazywait' | 'foodics' | etc...
   apiKey: string;
   store_id: string;
   branches: {
