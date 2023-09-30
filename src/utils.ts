@@ -435,9 +435,12 @@ export function getReservationTimes(
             seconds: 0,
             milliseconds: 0,
           });
+
+          // ? Check if time is 11:59 PM then add 1 minute:
           if (format(end, 'HH:mm') === '23:59') {
             end = add(end, { minutes: 1 });
           }
+
           return (
             isWithinInterval(startTime, { start, end }) &&
             isWithinInterval(endTime, { start, end })
@@ -446,19 +449,22 @@ export function getReservationTimes(
       ) ||
       [...(workingShifts?.[format(nextDay, 'EEEE')] ?? [])].some(
         ({ from, to }) => {
-          const start = set(selectedDate, {
+          const start = set(add(selectedDate, { days: 1 }), {
             hours: +from.split(':')[0],
             minutes: +from.split(':')[1],
             seconds: 0,
           });
-          let end = set(selectedDate, {
+          let end = set(add(selectedDate, { days: 1 }), {
             hours: +to.split(':')[0],
             minutes: +to.split(':')[1],
             seconds: 0,
           });
+
+          // ? Check if time is 11:59 PM then add 1 minute:
           if (format(end, 'HH:mm') === '23:59') {
             end = add(end, { minutes: 1 });
           }
+
           return (
             isWithinInterval(startTime, { start, end }) &&
             isWithinInterval(endTime, { start, end })
