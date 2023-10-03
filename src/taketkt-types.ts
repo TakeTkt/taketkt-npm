@@ -147,6 +147,7 @@ export type Service = {
   integrations?: ServiceIntegrations;
   employees: DashboardUser[];
   durations: ServiceDuration[];
+  enable_occupancy?: boolean;
 };
 
 export type ServiceDuration = {
@@ -354,6 +355,7 @@ export type Integration = {
   }[];
   external_store_id: string;
   number_of_invoices?: number;
+  auto_complete_after_pos_payment?: boolean;
 };
 
 export type SupportTicket = {
