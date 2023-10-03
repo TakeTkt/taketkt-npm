@@ -435,6 +435,7 @@ export type ReportData = {
   reservation_number?: string | null;
   created_date: string | null;
   price: number | Decimal;
+  occupancy: number;
   from_date_time?: string | null;
   to_date_time?: string | null;
   id: number;
