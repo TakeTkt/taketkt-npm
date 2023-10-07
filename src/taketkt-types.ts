@@ -18,6 +18,8 @@ export type User = {
   phone?: string;
   welcomeEmailSent?: boolean;
   is_test?: boolean; // Test for taketkt devs
+  source?: 'APP' | 'CONSOLE' | null;
+  app_version?: string | null;
 };
 
 export type DashboardUser = {
@@ -231,6 +233,8 @@ export type Waiting = {
   vat_percentage?: number;
   duration?: number | null;
   occupancy?: number | null;
+  source?: 'APP' | 'CONSOLE' | null;
+  app_version?: string | null;
 };
 
 export type Reservation = {
@@ -279,6 +283,8 @@ export type Reservation = {
   vat_percentage?: number;
   duration?: number | null;
   occupancy?: number | null;
+  source?: 'APP' | 'CONSOLE' | null;
+  app_version?: string | null;
 };
 
 export type BlockedTimes = {
