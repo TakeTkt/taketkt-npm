@@ -419,88 +419,106 @@ export function getReservationTimes(
     }
 
     // ? Check if the time slot is within the working shift
-    const nextDay = add(selectedDate, { days: 1 });
+    const nextDay = add(startTime, { days: 1 });
     const isWithinWorkingShift =
       [...(workingShifts?.[format(selectedDate, 'EEEE')] ?? [])].some(
         ({ from, to }) => {
-          const start = set(selectedDate, {
-            hours: +from.split(':')[0],
-            minutes: +from.split(':')[1],
+          let _start = set(selectedDate, {
+            hours: toNumber(from.split(':')[0]),
+            minutes: toNumber(from.split(':')[1]),
             seconds: 0,
             milliseconds: 0,
           });
-          let end = set(selectedDate, {
-            hours: +to.split(':')[0],
-            minutes: +to.split(':')[1],
+          let _end = set(selectedDate, {
+            hours: toNumber(to.split(':')[0]),
+            minutes: toNumber(to.split(':')[1]),
             seconds: 0,
             milliseconds: 0,
           });
 
           // ? Check if time is 11:59 PM then add 1 minute:
-          if (format(end, 'HH:mm') === '23:59') {
-            end = add(end, { minutes: 1 });
+          if (format(_end, 'HH:mm') === '23:59') {
+            _end = add(_end, { minutes: 1 });
           }
 
           return (
-            isWithinInterval(startTime, { start, end }) &&
-            isWithinInterval(endTime, { start, end })
+            isWithinInterval(startTime, { start: _start, end: _end }) &&
+            isWithinInterval(endTime, { start: _start, end: _end })
           );
         },
       ) ||
       [...(workingShifts?.[format(nextDay, 'EEEE')] ?? [])].some(
         ({ from, to }) => {
-          const start = set(add(selectedDate, { days: 1 }), {
-            hours: +from.split(':')[0],
-            minutes: +from.split(':')[1],
+          const _start = set(add(selectedDate, { days: 1 }), {
+            hours: toNumber(from.split(':')[0]),
+            minutes: toNumber(from.split(':')[1]),
             seconds: 0,
+            milliseconds: 0,
           });
-          let end = set(add(selectedDate, { days: 1 }), {
-            hours: +to.split(':')[0],
-            minutes: +to.split(':')[1],
+          let _end = set(add(selectedDate, { days: 1 }), {
+            hours: toNumber(to.split(':')[0]),
+            minutes: toNumber(to.split(':')[1]),
             seconds: 0,
+            milliseconds: 0,
           });
 
           // ? Check if time is 11:59 PM then add 1 minute:
-          if (format(end, 'HH:mm') === '23:59') {
-            end = add(end, { minutes: 1 });
+          if (format(_end, 'HH:mm') === '23:59') {
+            _end = add(_end, { minutes: 1 });
           }
 
           return (
-            isWithinInterval(startTime, { start, end }) &&
-            isWithinInterval(endTime, { start, end })
+            isWithinInterval(startTime, { start: _start, end: _end }) &&
+            isWithinInterval(endTime, { start: _start, end: _end })
           );
         },
       );
 
     // ? Check if the time slot is within the service reservation time
-    const isWithinReservationTime = isWithinInterval(selectedDate, {
-      start: set(selectedDate, {
-        hours: +reservationTime!.from!.split(':')[0],
-        minutes: +reservationTime!.from!.split(':')[1],
-        seconds: 0,
-        milliseconds: 0,
-      }),
-      end: set(selectedDate, {
-        hours: +reservationTime!.to!.split(':')[0],
-        minutes: +reservationTime!.to!.split(':')[1],
-        seconds: 0,
-        milliseconds: 0,
-      }),
+    const _reservationTimeFrom = reservationTime!.from;
+    let _reservationTimeTo = reservationTime!.to;
+    if (reservationTime!.to === '23:59') {
+      _reservationTimeTo = '00:00';
+    }
+    let is24HoursService =
+      _reservationTimeFrom === '00:00' && _reservationTimeTo === '00:00';
+    const _startOfReservationTime = set(selectedDate, {
+      hours: toNumber(_reservationTimeFrom.split(':')[0]),
+      minutes: toNumber(_reservationTimeFrom.split(':')[1]),
+      seconds: 0,
+      milliseconds: 0,
+    });
+    const _endOfReservationTime = set(selectedDate, {
+      hours: toNumber(_reservationTimeTo.split(':')[0]),
+      minutes: toNumber(_reservationTimeTo.split(':')[1]),
+      seconds: 0,
+      milliseconds: 0,
     });
 
-    // = Check if the custom time is available
-    return (
-      isWithinWorkingShift &&
-      isWithinReservationTime &&
-      !isTimeBusy(
-        reservedTimes,
-        blockedTimes,
-        employeeTimes,
-        startTime,
-        endTime,
-        isRequireEmployee,
-      )
+    // ? Check if within reservation time:
+    const isWithinReservationTime =
+      is24HoursService ||
+      (isWithinInterval(startTime, {
+        start: _startOfReservationTime,
+        end: _endOfReservationTime,
+      }) &&
+        isWithinInterval(endTime, {
+          start: _startOfReservationTime,
+          end: _endOfReservationTime,
+        }));
+
+    // ? Check if the time slot is reserved
+    const busy = isTimeBusy(
+      reservedTimes,
+      blockedTimes,
+      employeeTimes,
+      startTime,
+      endTime,
+      isRequireEmployee,
     );
+
+    // = Check if the custom time is available
+    return isWithinWorkingShift && isWithinReservationTime && !busy;
   });
 
   // * Format the available times
