@@ -56,30 +56,6 @@ export function cleanObject(obj: any) {
   });
 }
 
-export function convertFromGeoPoint(
-  location?: { latitude?: number; longitude?: number } & {
-    _latitude?: number;
-    _longitude?: number;
-  },
-) {
-  // This method corrects the location object
-  if (location?._latitude && location?._longitude) {
-    return {
-      lat: location._latitude,
-      lng: location._longitude,
-    };
-  } else if (location?.latitude && location?.longitude) {
-    return {
-      lat: location.latitude,
-      lng: location.longitude,
-    };
-  }
-  return {
-    lat: 24.7136,
-    lng: 46.6753,
-  };
-}
-
 export function getInitials(name = '') {
   return name
     .replace(/\s+/, ' ')

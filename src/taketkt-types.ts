@@ -1,5 +1,4 @@
 import type { Decimal } from '@prisma/client/runtime';
-import type { GeoPoint } from 'firebase/firestore';
 import type { Currency } from './currencies';
 import type { TimeZones } from './timezones';
 
@@ -102,7 +101,8 @@ export type Branch = {
   auto_reset_current_id?: boolean;
   working_shifts_timezone: TimeZones;
   working_shifts: WorkingShifts;
-  location?: GeoPoint;
+  latitude?: number | null;
+  longitude?: number | null;
   hide?: boolean;
   show_whatsapp_contact?: boolean;
   phone_number?: string;
