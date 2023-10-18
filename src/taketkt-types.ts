@@ -338,6 +338,7 @@ export type License = {
   license_id: string;
   store_id: string;
   payment_id?: string;
+  package_id?: string;
   created_date: Date;
   start_date: Date;
   expire_date: Date;

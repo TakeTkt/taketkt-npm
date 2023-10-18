@@ -5,6 +5,7 @@ import {
   Customer,
   DashboardUser,
   EmployeeRole,
+  License,
   Reservation,
   Service,
   ServiceDuration,
@@ -286,4 +287,19 @@ export function setNewDuration(
     duration: toNumber(obj?.duration ?? 60),
     price_increase: toNumber(obj?.price_increase ?? 0),
   } as ServiceDuration;
+}
+
+export function setLicense(license?: Partial<License> | null): License {
+  return {
+    license_id: '',
+    store_id: '',
+    created_date: new Date(),
+    start_date: new Date(),
+    expire_date: new Date(),
+    is_trial: false,
+    features: [],
+    number_of_tickets: 0,
+    number_of_used_tickets: 0,
+    ...(license ?? {}),
+  } as License;
 }
