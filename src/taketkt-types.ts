@@ -250,8 +250,8 @@ export type Reservation = {
   country_code?: string;
   phone: string;
   created_date?: Date;
-  from?: Date;
-  to?: Date;
+  from?: Date | null;
+  to?: Date | null;
   note?: string;
   done: boolean;
   is_ready?: boolean;
