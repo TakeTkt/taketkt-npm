@@ -15,6 +15,7 @@ export type User = {
   email?: string;
   country_code?: string;
   phone?: string;
+  photo?: string | null;
   welcomeEmailSent?: boolean;
   is_test?: boolean; // Test for taketkt devs
   source?: 'APP' | 'CONSOLE' | null;
