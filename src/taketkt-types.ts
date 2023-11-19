@@ -110,6 +110,7 @@ export type Branch = {
   logo?: string;
   auto_done_tickets?: boolean;
   auto_cancel_tickets?: boolean;
+  reservations_by_branch?: boolean;
   auto_cancel_or_done_waitings_minutes?: number;
   auto_cancel_or_done_reservations_minutes?: number;
   socialMedia?: {
