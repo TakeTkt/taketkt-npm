@@ -152,6 +152,7 @@ export type Service = {
   employees: DashboardUser[];
   durations: ServiceDuration[];
   enable_occupancy?: boolean;
+  force_duration_on_waiting?: boolean;
 };
 
 export type ServiceDuration = {
