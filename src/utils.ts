@@ -331,10 +331,22 @@ export function getReservationTimes(
   ignoreCurrentTime = false,
 ) {
   const now = new Date();
-  const startTime = set(add(startOfDay(selectedDate), { hours: 3 }), {
+  const selectedDateWorkingShifts = [
+    ...(workingShifts?.[format(selectedDate, 'EEEE')] ?? []),
+  ];
+  let startTime = set(add(startOfDay(selectedDate), { hours: 3 }), {
     seconds: 0,
     milliseconds: 0,
   });
+  if (selectedDateWorkingShifts.length > 0) {
+    const shiftFrom = selectedDateWorkingShifts.at(-1)!.from;
+    startTime = set(selectedDate, {
+      hours: toNumber(shiftFrom.split(':')[0]),
+      minutes: toNumber(shiftFrom.split(':')[1]),
+      seconds: 0,
+      milliseconds: 0,
+    });
+  }
   const endTime = set(add(endOfDay(selectedDate), { hours: 3 }), {
     seconds: 0,
     milliseconds: 0,
@@ -464,12 +476,16 @@ export function getReservationTimes(
       seconds: 0,
       milliseconds: 0,
     });
-    const _endOfReservationTime = set(selectedDate, {
+    let _endOfReservationTime = set(selectedDate, {
       hours: toNumber(_reservationTimeTo.split(':')[0]),
       minutes: toNumber(_reservationTimeTo.split(':')[1]),
       seconds: 0,
       milliseconds: 0,
     });
+
+    if (isBefore(_endOfReservationTime, _startOfReservationTime)) {
+      _endOfReservationTime = add(_endOfReservationTime, { days: 1 });
+    }
 
     // ? Check if within reservation time:
     const isWithinReservationTime =
