@@ -8,6 +8,7 @@ import {
   License,
   Reservation,
   Service,
+  ServiceCategory,
   ServiceDuration,
   Store,
   User,
@@ -41,6 +42,7 @@ export function setNewDashboardUser(
     emailVerified: false,
     phoneNumberVerified: false,
     photo: null,
+    pushToken: null,
     ...user,
   } as DashboardUser;
 }
@@ -302,4 +304,15 @@ export function setLicense(license?: Partial<License> | null): License {
     number_of_used_tickets: 0,
     ...(license ?? {}),
   } as License;
+}
+
+export function setNewServiceCategory(
+  obj?: Partial<ServiceCategory> | null,
+): ServiceCategory {
+  return {
+    store_id: '',
+    name_en: '',
+    name_ar: '',
+    ...(obj ?? {}),
+  } as ServiceCategory;
 }

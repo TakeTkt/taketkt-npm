@@ -37,6 +37,7 @@ export type DashboardUser = {
   phoneNumberVerified?: boolean;
   gender?: 'MALE' | 'FEMALE';
   is_test?: boolean; // Test for taketkt devs
+  pushToken?: string | null;
 };
 
 export type UserAccess = {
@@ -482,4 +483,13 @@ export type FAQ = {
     question_en?: string;
     active?: boolean;
   }[];
+};
+
+export type ServiceCategory = {
+  category_id: number;
+  store_id: string;
+  branch_id: string;
+  name_en: string;
+  name_ar: string;
+  active: boolean;
 };
