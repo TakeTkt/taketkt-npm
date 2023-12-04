@@ -401,6 +401,7 @@ export type LicensePackage = {
   }[];
   active?: boolean;
   is_recommended?: boolean;
+  price_without_discount?: number | null;
 };
 
 export type PaymentTypes = {
