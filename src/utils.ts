@@ -339,14 +339,45 @@ export function getReservationTimes(
     milliseconds: 0,
   });
   if (selectedDateWorkingShifts.length > 0) {
-    const shiftFrom = selectedDateWorkingShifts.at(-1)!.from;
+    const shiftFrom = selectedDateWorkingShifts[0]!.from;
+    const shiftTo = selectedDateWorkingShifts[0]!.to;
+    // * Set the start time to the first working shift:
     startTime = set(selectedDate, {
       hours: toNumber(shiftFrom.split(':')[0]),
       minutes: toNumber(shiftFrom.split(':')[1]),
       seconds: 0,
       milliseconds: 0,
     });
+    // * If the start time is less than 3 AM:
+    if (startTime.getHours() < 3) {
+      const shiftToHour = toNumber(shiftTo.split(':')[0]);
+      // ? Check if the shift ends after 3 AM:
+      if (shiftToHour > 3) {
+        startTime = set(selectedDate, {
+          hours: 3,
+          minutes: 0,
+          seconds: 0,
+          milliseconds: 0,
+        });
+      } else if (selectedDateWorkingShifts[1]) {
+        const nextShiftFrom = selectedDateWorkingShifts[1]!.from;
+        startTime = set(selectedDate, {
+          hours: toNumber(nextShiftFrom.split(':')[0]),
+          minutes: toNumber(nextShiftFrom.split(':')[1]),
+          seconds: 0,
+          milliseconds: 0,
+        });
+      } else {
+        startTime = set(selectedDate, {
+          hours: 3,
+          minutes: 0,
+          seconds: 0,
+          milliseconds: 0,
+        });
+      }
+    }
   }
+
   const endTime = set(add(endOfDay(selectedDate), { hours: 3 }), {
     seconds: 0,
     milliseconds: 0,
@@ -407,57 +438,55 @@ export function getReservationTimes(
     }
 
     // ? Check if the time slot is within the working shift
-    const nextDay = add(startTime, { days: 1 });
+    const nextDay = add(selectedDate, { days: 1 });
     const isWithinWorkingShift =
       [...(workingShifts?.[format(selectedDate, 'EEEE')] ?? [])].some(
         ({ from, to }) => {
-          let _start = set(selectedDate, {
-            hours: toNumber(from.split(':')[0]),
-            minutes: toNumber(from.split(':')[1]),
+          const start = set(selectedDate, {
+            hours: +from.split(':')[0],
+            minutes: +from.split(':')[1],
             seconds: 0,
             milliseconds: 0,
           });
-          let _end = set(selectedDate, {
-            hours: toNumber(to.split(':')[0]),
-            minutes: toNumber(to.split(':')[1]),
+          let end = set(selectedDate, {
+            hours: +to.split(':')[0],
+            minutes: +to.split(':')[1],
             seconds: 0,
             milliseconds: 0,
           });
 
           // ? Check if time is 11:59 PM then add 1 minute:
-          if (format(_end, 'HH:mm') === '23:59') {
-            _end = add(_end, { minutes: 1 });
+          if (format(end, 'HH:mm') === '23:59') {
+            end = add(end, { minutes: 1 });
           }
 
           return (
-            isWithinInterval(startTime, { start: _start, end: _end }) &&
-            isWithinInterval(endTime, { start: _start, end: _end })
+            isWithinInterval(startTime, { start, end }) &&
+            isWithinInterval(endTime, { start, end })
           );
         },
       ) ||
       [...(workingShifts?.[format(nextDay, 'EEEE')] ?? [])].some(
         ({ from, to }) => {
-          const _start = set(add(selectedDate, { days: 1 }), {
-            hours: toNumber(from.split(':')[0]),
-            minutes: toNumber(from.split(':')[1]),
+          const start = set(add(selectedDate, { days: 1 }), {
+            hours: +from.split(':')[0],
+            minutes: +from.split(':')[1],
             seconds: 0,
-            milliseconds: 0,
           });
-          let _end = set(add(selectedDate, { days: 1 }), {
-            hours: toNumber(to.split(':')[0]),
-            minutes: toNumber(to.split(':')[1]),
+          let end = set(add(selectedDate, { days: 1 }), {
+            hours: +to.split(':')[0],
+            minutes: +to.split(':')[1],
             seconds: 0,
-            milliseconds: 0,
           });
 
           // ? Check if time is 11:59 PM then add 1 minute:
-          if (format(_end, 'HH:mm') === '23:59') {
-            _end = add(_end, { minutes: 1 });
+          if (format(end, 'HH:mm') === '23:59') {
+            end = add(end, { minutes: 1 });
           }
 
           return (
-            isWithinInterval(startTime, { start: _start, end: _end }) &&
-            isWithinInterval(endTime, { start: _start, end: _end })
+            isWithinInterval(startTime, { start, end }) &&
+            isWithinInterval(endTime, { start, end })
           );
         },
       );
