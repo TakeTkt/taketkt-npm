@@ -493,4 +493,5 @@ export type ServiceCategory = {
   name_en: string;
   name_ar: string;
   active: boolean;
+  position: number;
 };
