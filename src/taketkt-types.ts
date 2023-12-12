@@ -20,6 +20,7 @@ export type User = {
   is_test?: boolean; // Test for taketkt devs
   source?: 'APP' | 'CONSOLE' | null;
   app_version?: string | null;
+  push_token?: string | null;
 };
 
 export type DashboardUser = {
@@ -37,7 +38,7 @@ export type DashboardUser = {
   phoneNumberVerified?: boolean;
   gender?: 'MALE' | 'FEMALE';
   is_test?: boolean; // Test for taketkt devs
-  pushToken?: string | null;
+  push_token?: string | null;
 };
 
 export type UserAccess = {
