@@ -314,6 +314,7 @@ export function setNewServiceCategory(
     store_id: '',
     name_en: '',
     name_ar: '',
+    active: true,
     ...(obj ?? {}),
   } as ServiceCategory;
 }

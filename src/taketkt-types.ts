@@ -130,6 +130,7 @@ export type Service = {
   name_ar: string;
   store_id: string;
   branch_id: string;
+  category_id?: number | null;
   branch_number: string;
   store_url: string;
   is_waiting?: boolean;
