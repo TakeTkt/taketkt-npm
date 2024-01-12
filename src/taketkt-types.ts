@@ -122,7 +122,6 @@ export type Branch = {
     tiktok?: string;
   };
   is_not_receiving_tickets?: boolean;
-  allow_reservations_cart?: boolean;
 };
 
 export type Service = {
