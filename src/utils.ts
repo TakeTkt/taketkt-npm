@@ -35,7 +35,7 @@ export function convertToDate(date: any) {
 }
 
 export function toNumber(x: any) {
-  return x === undefined || x === null || isNaN(x as any) ? 0 : Number(x);
+  return x === undefined || x === null || isNaN(Number(x)) ? 0 : Number(x);
 }
 
 export function getUniqueUid() {

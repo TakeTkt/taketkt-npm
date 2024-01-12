@@ -107,6 +107,7 @@ export function setNewBranch(branch?: Partial<Branch> | null): Branch {
     },
     created_date: new Date(),
     store_url: '',
+    allow_reservations_cart: true,
     ...(branch ?? {}),
   };
 }
