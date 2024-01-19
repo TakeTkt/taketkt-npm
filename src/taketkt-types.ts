@@ -206,6 +206,7 @@ export type Waiting = {
   service_id?: string;
   user_id?: string;
   employee_id?: string | null;
+  group_id?: string | null;
   name: string;
   email: string;
   country_code?: string;
@@ -251,6 +252,7 @@ export type Reservation = {
   service_id?: string;
   user_id?: string;
   employee_id?: string | null;
+  group_id?: string | null;
   name: string;
   email: string;
   country_code?: string;
@@ -497,3 +499,5 @@ export type ServiceCategory = {
   active: boolean;
   position: number;
 };
+
+export type Ticket = Waiting & Reservation;
