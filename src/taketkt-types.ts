@@ -417,8 +417,12 @@ export type PaymentTypes = {
 
 export type SalesRequest = {
   id: number;
-  phone: string;
+  name?: string | null;
   email?: string | null;
+  phone: string;
+  company?: string | null;
+  suitable_time?: string | null;
+  message?: string | null;
   is_done: boolean;
   is_canceled: boolean;
   created_date: Date;
