@@ -122,6 +122,7 @@ export type Branch = {
     tiktok?: string;
   };
   is_not_receiving_tickets?: boolean;
+  allow_tickets_outside_shifts?: boolean;
 };
 
 export type Service = {
