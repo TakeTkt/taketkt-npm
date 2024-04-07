@@ -195,7 +195,15 @@ export type Customer = {
 };
 
 export type TicketUpdate = {
-  type: 'SENT' | 'READY' | 'CANCELED' | 'SERVING' | 'DONE' | 'CONFIRMED';
+  type:
+    | 'SENT'
+    | 'READY'
+    | 'CANCELED'
+    | 'SERVING'
+    | 'DONE'
+    | 'CONFIRMED'
+    | 'REQUEUED'
+    | 'REBOOKED';
   time: Date;
   is_auto_status_change?: boolean;
 };
