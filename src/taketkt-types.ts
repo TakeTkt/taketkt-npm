@@ -515,3 +515,13 @@ export type ServiceCategory = {
 };
 
 export type Ticket = Waiting & Reservation;
+
+export type DashboardInvite = {
+  id: number;
+  user_id?: string;
+  email: string;
+  created_date: Date;
+  is_registered: boolean;
+  stores: string[];
+  access?: UserAccess;
+};
