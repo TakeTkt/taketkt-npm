@@ -203,7 +203,8 @@ export type TicketUpdate = {
     | 'DONE'
     | 'CONFIRMED'
     | 'REQUEUED'
-    | 'REBOOKED';
+    | 'REBOOKED'
+    | 'UPDATED';
   time: Date;
   is_auto_status_change?: boolean;
 };
