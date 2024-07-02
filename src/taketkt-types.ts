@@ -39,6 +39,7 @@ export type DashboardUser = {
   gender?: 'MALE' | 'FEMALE';
   is_test?: boolean; // Test for taketkt devs
   push_token?: string | null;
+  receive_notifications?: boolean;
 };
 
 export type UserAccess = {
