@@ -19,10 +19,16 @@ export interface MoyasarInit {
   language?: 'ar' | 'en';
   description?: string;
   success_url: string;
+  callback_url: string;
   back_url?: string;
   metadata?: {
     [key: string]: string;
   };
+  source?:
+    | CreditCardInitSource
+    | ApplePayInitSource
+    | StcPayInitSource
+    | TokenInitSource;
   credit_card?: {
     save_card?: boolean;
     [key: string]: any;
@@ -49,6 +55,41 @@ export interface MoyasarInvoice {
   } | null;
   payments: any[];
 }
+
+export interface CreditCardInitSource {
+  type: 'creditcard';
+  name: string;
+  number: string;
+  cvc: number;
+  month: number;
+  year: number;
+  '3ds'?: boolean;
+  manual?: boolean;
+  save_card?: boolean;
+}
+
+export interface ApplePayInitSource {
+  type: 'applepay';
+  token: string;
+}
+
+export interface StcPayInitSource {
+  type: 'stcpay';
+  mobile: string;
+  branch?: string;
+  cashier?: string;
+}
+
+export interface TokenInitSource {
+  type: 'token';
+  token: string;
+  '3ds'?: boolean;
+  manual?: boolean;
+}
+
+/**
+ ** Response types
+ */
 
 export interface MoyasarPayment {
   id: string;
