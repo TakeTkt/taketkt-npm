@@ -1,6 +1,14 @@
 import type { Currency } from './currencies';
 import type { Store } from './taketkt-types';
 
+export interface MoyasarError {
+  type: string;
+  message: string;
+  errors: {
+    [key: string]: string;
+  };
+}
+
 /**
  ** Init payment types
  */
