@@ -18,8 +18,8 @@ export interface MoyasarInit {
   currency?: Store['currency'];
   language?: 'ar' | 'en';
   description?: string;
-  success_url: string;
-  callback_url: string;
+  success_url?: string;
+  callback_url?: string;
   back_url?: string;
   metadata?: {
     [key: string]: string;
@@ -116,6 +116,7 @@ export interface MoyasarPayment {
     | ApplePayResponseSource
     | StcPayResponseSource
     | TokenResponseSource;
+  is_ticket?: boolean;
 }
 
 export interface CreditCardResponseSource {

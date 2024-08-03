@@ -219,6 +219,7 @@ export type Waiting = {
   user_id?: string;
   employee_id?: string | null;
   group_id?: number | null;
+  payment_id?: string | null;
   name: string;
   email: string;
   country_code?: string;
@@ -265,6 +266,7 @@ export type Reservation = {
   user_id?: string;
   employee_id?: string | null;
   group_id?: number | null;
+  payment_id?: string | null;
   name: string;
   email: string;
   country_code?: string;
