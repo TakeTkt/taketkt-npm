@@ -529,3 +529,9 @@ export type DashboardInvite = {
   stores: string[];
   access?: UserAccess;
 };
+
+export type PaymentMethod = {
+  id: number;
+  name: string;
+  active: boolean;
+};
