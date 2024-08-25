@@ -173,3 +173,56 @@ export type PurchaseLicenseData = {
   amount: number;
   isTest?: boolean;
 };
+
+export type MoyasarMerchant = {
+  id: string;
+  entity_id: string;
+  type: string;
+  status: string;
+  name: string;
+  website: string;
+  email: string;
+  statement_descriptor: string;
+  owners_count: number;
+  signatory: string;
+  signatory_count: number | null;
+  documents_complete: boolean;
+  api_keys: {
+    test: {
+      publishable_key: string;
+      secret_key: string;
+    };
+    live: {
+      publishable_key: string;
+      secret_key: string;
+    };
+  };
+  fees: Array<{
+    name: string;
+    rate: string;
+    fixed: string;
+    rated_cap: any;
+  }>;
+  enabled_schemes: Array<string>;
+  required_documents: Array<{
+    type: string;
+    info: Array<string>;
+    requires_upload: boolean;
+    required_count: number;
+  }>;
+  reasons: Array<any>;
+  created_at: string;
+  updated_at: string;
+  documents: Array<{
+    id: string;
+    type: string;
+    info: {
+      id?: string;
+      date_of_birth?: string;
+      iban?: string;
+      holder?: string;
+      number?: string;
+    };
+    file_uploaded: boolean;
+  }>;
+};
