@@ -549,6 +549,11 @@ export type Merchant = {
   email: string;
   created_at: Date;
   updated_at: Date;
+  data?: MoyasarMerchant | null;
+  submitted?: boolean;
+  submitted_at?: Date | null;
+  moyasar_documents?: MerchantDocument[];
+  stores?: Store;
 };
 
 export type MerchantDocument = {
@@ -567,6 +572,5 @@ export type MerchantDocument = {
     | 'investment_license'; // company only;
   extra_data: Record<string, string>;
   created_at: Date;
-  data?: MoyasarMerchant | null;
   merchants?: Merchant;
 };
