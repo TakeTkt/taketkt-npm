@@ -226,3 +226,16 @@ export type MoyasarMerchant = {
     file_uploaded: boolean;
   }>;
 };
+
+export type MoyasarTransfer = {
+  id: string;
+  recipient_type: 'Entity' | string;
+  recipient_id: string;
+  currency: string;
+  amount: number;
+  fee: number;
+  tax: number;
+  reference: string;
+  transaction_count: number;
+  created_at: string;
+};

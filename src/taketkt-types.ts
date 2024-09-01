@@ -1,7 +1,7 @@
 import type { Decimal } from '@prisma/client/runtime';
 import type { Currency } from './currencies';
 import type { TimeZones } from './timezones';
-import { MoyasarMerchant } from './payment';
+import { MoyasarMerchant, MoyasarTransfer } from './payment';
 
 export type ValueOf<T> = T[keyof T];
 export type TypeOf<T> = keyof T;
@@ -90,6 +90,7 @@ export type Store = {
   is_verified?: boolean;
   show_in_main_page?: boolean;
   is_test?: boolean; // Test for taketkt devs
+  is_active?: boolean;
 };
 
 export type Branch = {
@@ -553,6 +554,7 @@ export type Merchant = {
   submitted?: boolean;
   submitted_at?: Date | null;
   moyasar_documents?: MerchantDocument[];
+  moyasar_transfers?: MerchantTransfer[];
   stores?: Store;
 };
 
@@ -572,5 +574,17 @@ export type MerchantDocument = {
     | 'investment_license'; // company only;
   extra_data: Record<string, string>;
   created_at: Date;
+  merchants?: Merchant;
+};
+
+export type MerchantTransfer = {
+  id: string;
+  merchant_id: string;
+  currency: Currency;
+  amount: number;
+  fee: number;
+  tax: number;
+  created_at: Date;
+  data?: MoyasarTransfer[];
   merchants?: Merchant;
 };

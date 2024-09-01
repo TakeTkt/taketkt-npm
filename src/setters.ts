@@ -83,6 +83,9 @@ export function setNewStore(store?: Partial<Store>): Store {
       },
       phone_number: '',
     },
+    is_active: false,
+    is_test: false,
+    is_verified: false,
     ...store,
   };
 }
