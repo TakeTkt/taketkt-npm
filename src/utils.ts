@@ -267,18 +267,24 @@ export function isWithinWaitingTimeRange(service: Service, timezone?: string) {
   return isWithinInterval(now, { start, end });
 }
 
-export function isLimitByTicketNearEnd(tickets_count: {
-  total: number;
-  used: number;
-}) {
+export function isLimitByTicketNearEnd(
+  tickets_count?: {
+    total: number;
+    used: number;
+  } | null,
+) {
+  if (!tickets_count?.total) return false;
   const percent = (tickets_count.used / tickets_count.total) * 100;
   return percent >= 90 && percent < 100;
 }
 
-export function isLimitByTicketEnded(tickets_count: {
-  total: number;
-  used: number;
-}) {
+export function isLimitByTicketEnded(
+  tickets_count?: {
+    total: number;
+    used: number;
+  } | null,
+) {
+  if (!tickets_count?.total) return false;
   return tickets_count.used >= tickets_count.total;
 }
 
@@ -293,12 +299,11 @@ export function licenseValidity(
   const diff = differenceInCalendarDays(convertToDate(expire_date), new Date());
   const isAlert =
     (!!expire_date && (is_trial ? 3 : 14) >= diff) ||
-    (!!tickets_count && isLimitByTicketNearEnd(tickets_count));
+    isLimitByTicketNearEnd(tickets_count);
   const isHighAlert =
     (!!expire_date && (is_trial ? 1 : 7) >= diff) ||
-    (!!tickets_count && isLimitByTicketEnded(tickets_count));
-  const isEnded =
-    is_expired || (!!tickets_count && isLimitByTicketEnded(tickets_count));
+    isLimitByTicketEnded(tickets_count);
+  const isEnded = is_expired || isLimitByTicketEnded(tickets_count);
 
   return {
     diff: expire_date ? diff : 0,
