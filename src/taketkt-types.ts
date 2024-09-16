@@ -365,7 +365,7 @@ export type License = {
   package_id?: string;
   created_date: Date;
   start_date: Date;
-  expire_date: Date;
+  expire_date?: Date | null;
   is_trial: boolean;
   features: LicensePackage['features'];
   is_test?: boolean; // Test for taketkt devs

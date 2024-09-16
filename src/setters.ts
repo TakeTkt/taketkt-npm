@@ -316,7 +316,7 @@ export function setLicense(license?: Partial<License> | null): License {
     store_id: '',
     created_date: new Date(),
     start_date: new Date(),
-    expire_date: new Date(),
+    expire_date: null,
     is_trial: false,
     features: [],
     number_of_tickets: 0,

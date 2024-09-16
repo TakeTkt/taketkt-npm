@@ -287,19 +287,22 @@ export function licenseValidity(
   is_trial?: License['is_trial'],
   tickets_count?: { total: number; used: number } | null,
 ) {
-  const is_expired =
-    convertToDate(expire_date).getTime() < new Date().getTime();
+  const is_expired = !expire_date
+    ? false
+    : convertToDate(expire_date).getTime() < new Date().getTime();
   const diff = differenceInCalendarDays(convertToDate(expire_date), new Date());
   const isAlert =
-    (is_trial ? 3 : 14) >= diff ||
+    (!!expire_date && (is_trial ? 3 : 14) >= diff) ||
     (!!tickets_count && isLimitByTicketNearEnd(tickets_count));
   const isHighAlert =
-    (is_trial ? 1 : 7) >= diff ||
+    (!!expire_date && (is_trial ? 1 : 7) >= diff) ||
     (!!tickets_count && isLimitByTicketEnded(tickets_count));
+  const isEnded =
+    is_expired || (!!tickets_count && isLimitByTicketEnded(tickets_count));
+
   return {
-    diff,
-    isEnded:
-      is_expired || (!!tickets_count && isLimitByTicketEnded(tickets_count)),
+    diff: expire_date ? diff : 0,
+    isEnded,
     isAlert,
     isHighAlert,
   };
