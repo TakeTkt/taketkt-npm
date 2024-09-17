@@ -588,3 +588,27 @@ export type MerchantTransfer = {
   data?: MoyasarTransfer[];
   merchants?: Merchant;
 };
+
+export type Billing = {
+  id: number;
+  store_id: string;
+  token: string;
+  name: string;
+  last_four: string;
+  exp_month: string;
+  exp_year: string;
+  last_payment_date?: Date | null;
+  created_at: Date;
+  updated_at: Date;
+};
+
+export type BillingHistory = {
+  id: number;
+  billing_id: number;
+  amount: Decimal;
+  is_paid: boolean;
+  should_retry: boolean;
+  created_at: Date;
+  updated_at: Date;
+  last_retry_date?: Date | null;
+};
