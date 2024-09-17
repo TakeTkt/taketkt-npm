@@ -239,3 +239,20 @@ export type MoyasarTransfer = {
   transaction_count: number;
   created_at: string;
 };
+
+export type TokenResult = {
+  id: string;
+  status: 'initiated' | 'active' | 'inactive';
+  brand: string;
+  funding: string;
+  country: string;
+  month: string;
+  year: string;
+  name: string;
+  last_four: string;
+  metadata: any | null;
+  message: string | null;
+  verification_url: string;
+  created_at: string;
+  updated_at: string;
+};
