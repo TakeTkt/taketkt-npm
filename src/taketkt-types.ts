@@ -414,7 +414,8 @@ export type LicensePackage = {
   currency: Currency;
   features: {
     feature_id: string;
-    feature_name: string;
+    feature_name_en: string;
+    feature_name_ar: string;
     limited_by_tickets?: boolean;
     number_of_tickets?: number;
     expiration_by_days?: number;
@@ -592,14 +593,18 @@ export type MerchantTransfer = {
 export type Billing = {
   id: number;
   store_id: string;
+  package_id: string;
   token: string;
   name: string;
   last_four: string;
   exp_month: string;
   exp_year: string;
+  is_active: boolean;
   last_payment_date?: Date | null;
   created_at: Date;
   updated_at: Date;
+  stores?: Store;
+  packages?: LicensePackage;
 };
 
 export type BillingHistory = {
@@ -611,4 +616,6 @@ export type BillingHistory = {
   created_at: Date;
   updated_at: Date;
   last_retry_date?: Date | null;
+  stores?: Store;
+  packages?: LicensePackage;
 };
