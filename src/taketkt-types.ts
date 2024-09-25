@@ -1,7 +1,7 @@
 import type { Decimal } from '@prisma/client/runtime';
 import type { Currency } from './currencies';
+import type { MoyasarMerchant, MoyasarTransfer } from './payment';
 import type { TimeZones } from './timezones';
-import { MoyasarMerchant, MoyasarTransfer } from './payment';
 
 export type ValueOf<T> = T[keyof T];
 export type TypeOf<T> = keyof T;
@@ -609,8 +609,10 @@ export type Billing = {
 
 export type BillingHistory = {
   id: number;
-  billing_id: number;
-  amount: Decimal;
+  store_id: string;
+  package_id: string;
+  payment_id: string;
+  amount: Decimal | number;
   is_paid: boolean;
   should_retry: boolean;
   created_at: Date;
@@ -618,4 +620,5 @@ export type BillingHistory = {
   last_retry_date?: Date | null;
   stores?: Store;
   packages?: LicensePackage;
+  payments?: any;
 };
