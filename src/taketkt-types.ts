@@ -599,6 +599,7 @@ export type Billing = {
   last_four: string;
   exp_month: string;
   exp_year: string;
+  brand?: string;
   is_active: boolean;
   last_payment_date?: Date | null;
   created_at: Date;
