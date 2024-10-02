@@ -600,6 +600,7 @@ export type Billing = {
   exp_year: string;
   brand?: string;
   is_active: boolean;
+  is_auto_renew: boolean;
   last_payment_date?: Date | null;
   created_at: Date;
   updated_at: Date;
@@ -618,6 +619,7 @@ export type BillingHistory = {
   created_at: Date;
   updated_at: Date;
   last_retry_date?: Date | null;
+  retry_count: number;
   stores?: Store;
   packages?: LicensePackage;
   payments?: any;
