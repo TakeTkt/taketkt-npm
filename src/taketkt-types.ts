@@ -91,6 +91,7 @@ export type Store = {
   show_in_main_page?: boolean;
   is_test?: boolean; // Test for taketkt devs
   is_active?: boolean;
+  tickets_percent_for_payment?: number | Decimal;
 };
 
 export type Branch = {
@@ -371,8 +372,6 @@ export type License = {
   is_test?: boolean; // Test for taketkt devs
   number_of_tickets?: number;
   number_of_used_tickets?: number;
-  email_sent?: boolean;
-  disabled?: boolean;
 };
 
 export type Integration = {
@@ -622,4 +621,30 @@ export type BillingHistory = {
   stores?: Store;
   packages?: LicensePackage;
   payments?: any;
+};
+
+export type BusyTimesWeekday = {
+  store_id: string;
+  branch_id: string;
+  weekday: number;
+  total: number;
+};
+
+export type BusyTimesHourly = {
+  store_id: string;
+  branch_id: string;
+  hour: number;
+  total: number;
+};
+
+export type BusyTimes = {
+  weekdays: BusyTimesWeekday[];
+  hourly: BusyTimesHourly[];
+};
+
+export type Cohort = {
+  store_id: string;
+  month: string;
+  total_customers: number;
+  returning_customers: number[];
 };

@@ -86,6 +86,7 @@ export function setNewStore(store?: Partial<Store>): Store {
     is_active: false,
     is_test: false,
     is_verified: false,
+    tickets_percent_for_payment: 100,
     ...store,
   };
 }
