@@ -612,7 +612,7 @@ export type BillingHistory = {
   id: number;
   store_id: string;
   package_id: string;
-  payment_id: string;
+  payment_id?: string | null;
   amount: Decimal | number;
   is_paid: boolean;
   should_retry: boolean;
