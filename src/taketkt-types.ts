@@ -1,6 +1,5 @@
 import type { Decimal } from '@prisma/client/runtime';
 import type { Currency } from './currencies';
-import type { MoyasarMerchant, MoyasarTransfer } from './payment';
 import type { TimeZones } from './timezones';
 
 export type ValueOf<T> = T[keyof T];
@@ -536,57 +535,6 @@ export type PaymentMethod = {
   id: number;
   name: string;
   active: boolean;
-};
-
-export type Merchant = {
-  merchant_id: string;
-  store_id: string;
-  entity_id: string;
-  name: string;
-  type: 'establishment' | 'company';
-  status: string;
-  public_name?: string;
-  website?: string;
-  email: string;
-  created_at: Date;
-  updated_at: Date;
-  data?: MoyasarMerchant | null;
-  submitted?: boolean;
-  submitted_at?: Date | null;
-  moyasar_documents?: MerchantDocument[];
-  moyasar_transfers?: MerchantTransfer[];
-  stores?: Store;
-};
-
-export type MerchantDocument = {
-  file_id: string;
-  merchant_id: string;
-  file_base64: string;
-  file_type:
-    | 'owner_id'
-    // | 'signatory_id'
-    | 'owner_address'
-    // | 'signatory_address'
-    | 'commercial_registration'
-    | 'company_address'
-    | 'vat_certificate'
-    | 'bank_iban_certificate'
-    | 'investment_license'; // company only;
-  extra_data: Record<string, string>;
-  created_at: Date;
-  merchants?: Merchant;
-};
-
-export type MerchantTransfer = {
-  id: string;
-  merchant_id: string;
-  currency: Currency;
-  amount: number;
-  fee: number;
-  tax: number;
-  created_at: Date;
-  data?: MoyasarTransfer[];
-  merchants?: Merchant;
 };
 
 export type Billing = {

@@ -9,32 +9,6 @@ export interface MoyasarError {
   };
 }
 
-/**
- ** Init payment types
- */
-
-export interface MoyasarInit {
-  amount: number;
-  currency?: Store['currency'];
-  language?: 'ar' | 'en';
-  description?: string;
-  success_url?: string;
-  callback_url?: string;
-  back_url?: string;
-  metadata?: {
-    [key: string]: string;
-  };
-  source?:
-    | CreditCardInitSource
-    | ApplePayInitSource
-    | StcPayInitSource
-    | TokenInitSource;
-  credit_card?: {
-    save_card?: boolean;
-    [key: string]: any;
-  };
-}
-
 export interface MoyasarInvoice {
   id: string;
   status: 'initiated' | string;
@@ -86,10 +60,6 @@ export interface TokenInitSource {
   '3ds'?: boolean;
   manual?: boolean;
 }
-
-/**
- ** Response types
- */
 
 export interface MoyasarPayment {
   id: string;
@@ -158,87 +128,6 @@ export interface TokenResponseSource {
   message: string;
   transaction_url?: string | null;
 }
-
-/**
- * * Custom taketkt types:
- */
-
-export type PurchaseLicenseData = {
-  user_id: string;
-  store_id: string;
-  email: string;
-  phoneNumber: string;
-  package_id: string;
-  package_name: string;
-  amount: number;
-  isTest?: boolean;
-};
-
-export type MoyasarMerchant = {
-  id: string;
-  entity_id: string;
-  type: string;
-  status: string;
-  name: string;
-  website: string;
-  email: string;
-  statement_descriptor: string;
-  owners_count: number;
-  signatory: string;
-  signatory_count: number | null;
-  documents_complete: boolean;
-  api_keys: {
-    test: {
-      publishable_key: string;
-      secret_key: string;
-    };
-    live: {
-      publishable_key: string;
-      secret_key: string;
-    };
-  };
-  fees: Array<{
-    name: string;
-    rate: string;
-    fixed: string;
-    rated_cap: any;
-  }>;
-  enabled_schemes: Array<string>;
-  required_documents: Array<{
-    type: string;
-    info: Array<string>;
-    requires_upload: boolean;
-    required_count: number;
-  }>;
-  reasons: Array<any>;
-  created_at: string;
-  updated_at: string;
-  documents: Array<{
-    id: string;
-    type: string;
-    info: {
-      id?: string;
-      date_of_birth?: string;
-      iban?: string;
-      holder?: string;
-      number?: string;
-    };
-    file_uploaded: boolean;
-  }>;
-};
-
-export type MoyasarTransfer = {
-  id: string;
-  recipient_type: 'Entity' | string;
-  recipient_id: string;
-  currency: string;
-  amount: number;
-  fee: number;
-  tax: number;
-  reference: string;
-  transaction_count: number;
-  created_at: string;
-};
 
 export type TokenResult = {
   id: string;
