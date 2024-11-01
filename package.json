@@ -30,7 +30,6 @@
   },
   "dependencies": {
     "@prisma/client": "^4.16.1",
-    "@types/firebase": "^3.2.1",
     "@types/lodash.isequalwith": "^4.4.7",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
@@ -47,8 +46,8 @@
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.8.8",
     "release-it": "^15.11.0",
-    "typescript": "^5.1.5",
     "ts-loader": "^6.0.4",
+    "typescript": "^5.1.5",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7"
   }
