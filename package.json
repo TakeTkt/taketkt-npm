@@ -18,7 +18,6 @@
   "repository": "https://github.com/TakeTkt/taketkt-npm.git",
   "author": "Mustafa Alsihati <51824138+MustafaAlsihati@users.noreply.github.com>",
   "license": "MIT",
-  "private": false,
   "files": [
     "lib",
     "esm",
@@ -29,15 +28,15 @@
     "access": "public"
   },
   "dependencies": {
-    "@prisma/client": "^4.16.1",
-    "@types/lodash.isequalwith": "^4.4.7",
+    "@prisma/client": "^5.21.1",
+    "@types/lodash.isequalwith": "^4.4.9",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
     "lodash.isequalwith": "^4.4.0",
-    "rimraf": "^5.0.1"
+    "rimraf": "^6.0.1"
   },
   "devDependencies": {
-    "@types/node": "^20.3.2",
+    "@types/node": "^22.8.6",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
     "eslint": "^8.43.0",
@@ -46,9 +45,10 @@
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.8.8",
     "release-it": "^15.11.0",
-    "ts-loader": "^6.0.4",
-    "typescript": "^5.1.5",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.6.3",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7"
-  }
+  },
+  "packageManager": "yarn@4.5.1"
 }
