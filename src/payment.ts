@@ -129,7 +129,7 @@ export interface TokenResponseSource {
   transaction_url?: string | null;
 }
 
-export type TokenResult = {
+export interface TokenResult {
   id: string;
   status: 'initiated' | 'active' | 'inactive';
   brand: string;
@@ -144,4 +144,4 @@ export type TokenResult = {
   verification_url: string;
   created_at: string;
   updated_at: string;
-};
+}
