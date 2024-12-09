@@ -1,6 +1,7 @@
 import { Decimal } from '@prisma/client/runtime/library';
 import type { Currency } from './currencies';
 import type { TimeZones } from './timezones';
+import type { PermissionsList } from './permissions';
 
 export type ValueOf<T> = T[keyof T];
 export type TypeOf<T> = keyof T;
@@ -55,14 +56,7 @@ export type UserAccess = {
   };
 };
 
-export type Permissions =
-  | 'ACCESS_DASHBOARD_PERMISSION'
-  | 'VIEW_LANDING_PAGE_PERMISSION'
-  | 'CUSTOMERS_PERMISSION'
-  | 'SERVICES_PERMISSION'
-  | 'EMPLOYEES_PERMISSION'
-  | 'BRANCH_SETTINGS_PERMISSION'
-  | 'VIEW_REPORTS_PERMISSION';
+export type Permissions = (typeof PermissionsList)[number];
 
 export type Store = {
   name_en: string;
@@ -222,6 +216,7 @@ export type Waiting = {
   employee_id?: string | null;
   group_id?: number | null;
   payment_id?: string | null;
+  coupon_id?: number | null;
   name: string;
   email: string;
   country_code?: string;
@@ -269,6 +264,7 @@ export type Reservation = {
   employee_id?: string | null;
   group_id?: number | null;
   payment_id?: string | null;
+  coupon_id?: number | null;
   name: string;
   email: string;
   country_code?: string;
@@ -348,6 +344,7 @@ export type EmployeeRole = {
   is_admin?: boolean;
   is_default?: boolean;
   creation_date?: Date;
+  accountant?: boolean;
 };
 
 export type OtpCodeDoc = {
@@ -597,4 +594,23 @@ export type Cohort = {
   month: string;
   total_customers: number;
   returning_customers: number[];
+};
+
+export type Coupon = {
+  id: number;
+  store_id?: string | null;
+  code: string;
+  discount_percentage: Decimal | number;
+  is_active: boolean;
+  start_date: Date;
+  end_date: Date | null;
+  is_limited_by_time: boolean;
+  is_limited_by_usage: boolean;
+  usage_limit: number | null;
+  usage_count: number;
+  created_at: Date;
+  updated_at: Date;
+  store?: Store | null;
+  waitings?: Waiting[];
+  reservations?: Reservation[];
 };

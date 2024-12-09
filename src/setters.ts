@@ -2,6 +2,7 @@ import roles from './roles';
 import {
   Branch,
   BranchPolicy,
+  Coupon,
   Customer,
   DashboardUser,
   EmployeeRole,
@@ -15,7 +16,7 @@ import {
   UserAccess,
   Waiting,
 } from './taketkt-types';
-import { getTodaysName, toNumber } from './utils';
+import { convertToDate, getTodaysName, toNumber } from './utils';
 
 export function setNewUser(user: Partial<User>): User {
   return {
@@ -336,4 +337,21 @@ export function setNewServiceCategory(
     active: true,
     ...(obj ?? {}),
   } as ServiceCategory;
+}
+
+export function setNewCoupon(obj?: Partial<Coupon> | null): Coupon {
+  return {
+    code: '',
+    is_active: true,
+    is_limited_by_time: false,
+    is_limited_by_usage: false,
+    usage_limit: 10,
+    usage_count: 0,
+    ...(obj ?? {}),
+    discount_percentage: toNumber(obj?.discount_percentage ?? 0),
+    start_date: convertToDate(obj?.start_date),
+    end_date: obj?.end_date ? convertToDate(obj.end_date) : null,
+    created_at: convertToDate(obj?.created_at),
+    updated_at: convertToDate(obj?.updated_at),
+  } as Coupon;
 }
