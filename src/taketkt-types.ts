@@ -235,6 +235,7 @@ export type Waiting = {
   service_name_ar?: string;
   photo?: string | null;
   price?: number;
+  discounts?: TicketDiscount[];
   currency?: Currency;
   customer_did_not_come?: boolean;
   cancel_note?: string;
@@ -285,6 +286,7 @@ export type Reservation = {
   service_name_ar?: string;
   photo?: string | null;
   price?: number;
+  discounts?: TicketDiscount[];
   currency?: Currency;
   reservation_number?: string;
   customer_did_not_come?: boolean;
@@ -305,6 +307,13 @@ export type Reservation = {
   occupancy?: number | null;
   source?: 'APP' | 'CONSOLE' | null;
   app_version?: string | null;
+};
+
+export type TicketDiscount = {
+  id: number;
+  name: string;
+  type: 'COUPON';
+  amount: number;
 };
 
 export type BlockedTimes = {
