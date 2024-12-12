@@ -172,6 +172,15 @@ export function toFixed(num?: number) {
   );
 }
 
+export function absoluteNumber(num: any) {
+  let _num = Math.abs(toNumber(num));
+  return _num > 0 ? _num : 0;
+}
+
+export function sumArray(arr: number[]) {
+  return arr.reduce((acc, val) => toNumber(acc) + toNumber(val), 0);
+}
+
 export function jsonParse<T>(str: string | null | undefined) {
   if (!str) return null;
   try {

@@ -313,7 +313,7 @@ export type TicketDiscount = {
   id: number;
   name: string;
   type: 'COUPON';
-  amount: number;
+  amount_percentage: number;
 };
 
 export type BlockedTimes = {
