@@ -18,6 +18,8 @@ const roles: EmployeeRole[] = [
       'VIEW_LANDING_PAGE_PERMISSION',
       'SERVICES_PERMISSION',
       'EMPLOYEES_PERMISSION',
+      'COUPONS_PERMISSION',
+      'VIEW_REPORTS_PERMISSION',
     ],
     is_admin: false,
     is_default: true,
@@ -46,7 +48,7 @@ const roles: EmployeeRole[] = [
     permissions: [
       'ACCESS_DASHBOARD_PERMISSION',
       'VIEW_LANDING_PAGE_PERMISSION',
-      'VIEW_LANDING_PAGE_PERMISSION',
+      'VIEW_REPORTS_PERMISSION',
     ],
     is_admin: false,
     is_default: true,
