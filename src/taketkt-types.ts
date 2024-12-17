@@ -480,6 +480,7 @@ export type ReportData = {
   from_date_time?: string | null;
   to_date_time?: string | null;
   id: number;
+  discounts: TicketDiscount[];
   users: {
     user_id: string;
     country_code: string | null;
@@ -495,6 +496,9 @@ export type ReportData = {
     branch_id: string;
     name_en: string | null;
     name_ar: string | null;
+  };
+  stores: {
+    vat_percentage: number | null;
   };
 };
 
