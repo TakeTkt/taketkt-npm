@@ -140,6 +140,7 @@ export function setNewService(
   }
 
   return {
+    service_id: service?.service_id,
     name_en: '',
     name_ar: '',
     store_id: branch?.store_id ?? '',
@@ -170,7 +171,7 @@ export function setNewService(
     ...obj,
     ...(service ?? {}),
     durations: (service?.durations ?? []).map(setNewDuration),
-  };
+  } as Service;
 }
 
 export function setNewRole(role?: Partial<EmployeeRole> | null): EmployeeRole {
@@ -220,6 +221,9 @@ export function setNewWaiting(
   user?: User,
 ): Waiting {
   return {
+    waiting_id: waiting?.waiting_id,
+    service_id: waiting?.service_id,
+    id: waiting?.id,
     store_id: store?.store_id,
     store_name_en: store?.name_en,
     store_name_ar: store?.name_ar,
@@ -248,7 +252,7 @@ export function setNewWaiting(
     duration: null,
     occupancy: 1,
     ...waiting,
-  };
+  } as Waiting;
 }
 
 export function setNewReservation(
@@ -258,6 +262,9 @@ export function setNewReservation(
   user?: User,
 ): Reservation {
   return {
+    reservation_id: reservation?.reservation_id,
+    service_id: reservation?.service_id,
+    id: reservation?.id,
     store_id: store?.store_id,
     store_name_en: store?.name_en,
     store_name_ar: store?.name_ar,
@@ -288,7 +295,7 @@ export function setNewReservation(
     duration: null,
     occupancy: 1,
     ...reservation,
-  };
+  } as Reservation;
 }
 
 export function setBranchPolicy(
