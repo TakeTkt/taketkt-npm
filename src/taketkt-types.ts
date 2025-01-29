@@ -124,7 +124,7 @@ export type Branch = {
 };
 
 export type Service = {
-  service_id?: string;
+  service_id: string;
   name_en: string;
   name_ar: string;
   store_id: string;
@@ -207,12 +207,12 @@ export type TicketUpdate = {
 };
 
 export type Waiting = {
-  waiting_id?: string;
-  id?: number;
-  store_id?: string;
-  branch_id?: string;
-  service_id?: string;
-  user_id?: string;
+  waiting_id: string;
+  id: number;
+  store_id: string;
+  branch_id: string;
+  service_id: string;
+  user_id: string;
   employee_id?: string | null;
   group_id?: number | null;
   payment_id?: string | null;
@@ -256,12 +256,12 @@ export type Waiting = {
 };
 
 export type Reservation = {
-  reservation_id?: string;
-  id?: number;
-  store_id?: string;
-  branch_id?: string;
-  service_id?: string;
-  user_id?: string;
+  reservation_id: string;
+  id: number;
+  store_id: string;
+  branch_id: string;
+  service_id: string;
+  user_id: string;
   employee_id?: string | null;
   group_id?: number | null;
   payment_id?: string | null;
@@ -394,21 +394,19 @@ export type Integration = {
 };
 
 export type SupportTicket = {
-  support_ticket_id?: string;
-  store_id?: string;
-  branch_id?: string;
-  user_id?: string;
-  userName?: string;
-  userEmail?: string;
-  userPhoneNumber?: string;
-  created_date?: Date;
-  last_update?: Date;
-  store_name_en?: string;
-  store_name_ar?: string;
-  branch_name_en?: string;
-  branch_name_ar?: string;
-  subject?: string;
-  message?: string;
+  support_ticket_id: string;
+  store_id: string;
+  branch_id?: string | null;
+  user_id?: string | null;
+  dashboarduser_id?: string | null;
+  created_date: Date;
+  last_update: Date;
+  subject: string;
+  message: string;
+  store?: Store;
+  branch?: Branch | null;
+  user?: User | null;
+  dashboarduser?: DashboardUser | null;
 };
 
 export type LicensePackage = {
