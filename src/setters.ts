@@ -302,7 +302,6 @@ export function setBranchPolicy(
   obj?: Partial<BranchPolicy> | null,
 ): BranchPolicy {
   return {
-    policy_id: '',
     store_id: '',
     branches: [],
     createdDate: new Date(),
@@ -310,7 +309,7 @@ export function setBranchPolicy(
     text: '',
     active: true,
     ...(obj ?? {}),
-  };
+  } as BranchPolicy;
 }
 
 export function setNewDuration(

@@ -527,7 +527,7 @@ export type ServiceCategory = {
   position: number;
 };
 
-export type Ticket = Waiting & Reservation;
+export type Ticket = Waiting | Reservation;
 
 export type DashboardInvite = {
   id: number;
