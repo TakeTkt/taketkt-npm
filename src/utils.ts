@@ -10,6 +10,7 @@ import {
   License,
   Reservation,
   Service,
+  Ticket,
   Waiting,
   WorkingShift,
   WorkingShifts,
@@ -320,4 +321,12 @@ export function licenseValidity(
     isAlert,
     isHighAlert,
   };
+}
+
+export function isWaiting(ticket: Ticket): ticket is Waiting {
+  return !!ticket && 'waiting_id' in ticket;
+}
+
+export function isReservation(ticket: Ticket): ticket is Reservation {
+  return !!ticket && 'reservation_id' in ticket;
 }
