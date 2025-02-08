@@ -323,10 +323,14 @@ export function licenseValidity(
   };
 }
 
-export function isWaiting(ticket: Ticket): ticket is Waiting {
+export function isWaiting(
+  ticket: Ticket | Partial<Ticket> | null | undefined,
+): ticket is Waiting {
   return !!ticket && 'waiting_id' in ticket;
 }
 
-export function isReservation(ticket: Ticket): ticket is Reservation {
+export function isReservation(
+  ticket: Ticket | Partial<Ticket> | null | undefined,
+): ticket is Reservation {
   return !!ticket && 'reservation_id' in ticket;
 }
