@@ -125,7 +125,9 @@ export function sortArrayByDate<T>(
 }
 
 export function sortWaitings(waitings: Waiting[]) {
-  const canceled = waitings.filter(w => w.is_canceled);
+  const canceled = waitings.filter(
+    w => w.is_canceled || w.customer_did_not_come,
+  );
   const dones = waitings.filter(w => w.done && !w.is_canceled);
   const ready = waitings.filter(
     w => w.is_ready && !w.done && !w.is_canceled && !w.serving_now,
@@ -135,7 +137,12 @@ export function sortWaitings(waitings: Waiting[]) {
   );
   const queue = sortArrayByDate(
     waitings.filter(
-      w => !w.is_canceled && !w.serving_now && !w.done && !w.is_ready,
+      w =>
+        !w.is_canceled &&
+        !w.customer_did_not_come &&
+        !w.serving_now &&
+        !w.done &&
+        !w.is_ready,
     ),
     'created_date',
     'asc',
@@ -144,7 +151,9 @@ export function sortWaitings(waitings: Waiting[]) {
 }
 
 export function sortReservations(reservations: Reservation[]) {
-  const canceled = reservations.filter(w => w.is_canceled);
+  const canceled = reservations.filter(
+    w => w.is_canceled || w.customer_did_not_come,
+  );
   const dones = reservations.filter(w => w.done && !w.is_canceled);
   const ready = reservations.filter(
     w => w.is_ready && !w.done && !w.is_canceled && !w.serving_now,
@@ -154,7 +163,12 @@ export function sortReservations(reservations: Reservation[]) {
   );
   const queue = sortArrayByDate(
     reservations.filter(
-      w => !w.is_canceled && !w.serving_now && !w.done && !w.is_ready,
+      w =>
+        !w.is_canceled &&
+        !w.customer_did_not_come &&
+        !w.serving_now &&
+        !w.done &&
+        !w.is_ready,
     ),
     'from',
     'asc',
