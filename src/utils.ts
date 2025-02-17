@@ -1,10 +1,9 @@
-import utcToZonedTime from 'date-fns-tz/utcToZonedTime';
-import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
-import format from 'date-fns/format';
-import intervalToDuration from 'date-fns/intervalToDuration';
-import isWithinInterval from 'date-fns/isWithinInterval';
-import parse from 'date-fns/parse';
-import set from 'date-fns/set';
+import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
+import { format } from 'date-fns/format';
+import { intervalToDuration } from 'date-fns/intervalToDuration';
+import { isWithinInterval } from 'date-fns/isWithinInterval';
+import { parse } from 'date-fns/parse';
+import { set } from 'date-fns/set';
 import isEqualWith from 'lodash.isequalwith';
 import {
   License,
@@ -15,6 +14,7 @@ import {
   WorkingShift,
   WorkingShifts,
 } from './taketkt-types';
+import { TZDate } from '@date-fns/tz';
 
 export function convertToDate(date: any) {
   if (date instanceof Date) {
@@ -244,7 +244,7 @@ export function isWithinShift(
   timezone?: string,
 ) {
   let type: 'OPEN' | 'CLOSED' | 'CLOSING_SOON' = 'CLOSED';
-  let now = timezone ? utcToZonedTime(new Date(), timezone) : new Date();
+  let now = timezone ? new TZDate(new Date(), timezone) : new Date();
   let shift: WorkingShift | undefined;
 
   if (shifts && Object.keys(shifts).length) {
@@ -275,7 +275,7 @@ export function isWithinShift(
 
 export function isWithinWaitingTimeRange(service: Service, timezone?: string) {
   if (!service || !service?.reservation_time) return true;
-  const now = timezone ? utcToZonedTime(new Date(), timezone) : new Date();
+  const now = timezone ? new TZDate(new Date(), timezone) : new Date();
   const from = service.reservation_time.from.split(':');
   const to = service.reservation_time.to.split(':');
   let start = set(now, {
