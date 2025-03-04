@@ -34,6 +34,7 @@ export type DashboardUser = {
   phone: string;
   stores: string[];
   access?: UserAccess;
+  working_shifts?: WorkingShifts;
   photo?: string | null;
   emailVerified?: boolean;
   phoneNumberVerified?: boolean;
