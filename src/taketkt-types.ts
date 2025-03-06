@@ -626,3 +626,9 @@ export type Coupon = {
   waitings?: Waiting[];
   reservations?: Reservation[];
 };
+
+export type Banner = {
+  id: number;
+  imageUrl: string;
+  path?: string;
+};
