@@ -632,3 +632,14 @@ export type Banner = {
   imageUrl: string;
   path?: string;
 };
+
+export type Notification = {
+  id: number;
+  user_id: string;
+  title: string;
+  content: string;
+  data?: string;
+  createdDate: Date;
+  isRead?: boolean;
+  user?: User | null;
+};
