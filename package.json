@@ -1,6 +1,6 @@
 {
   "name": "taketkt",
-  "version": "1.4.34",
+  "version": "1.4.35",
   "description": "taketkt types, setters, validators, utilities, and generate functions that are used across taketkt projects",
   "main": "lib/index.js",
   "module": "esm/index.js",
