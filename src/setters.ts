@@ -68,6 +68,7 @@ export function setNewStore(store?: Partial<Store>): Store {
     name_ar: '',
     store_id: '',
     store_url: '',
+    logo: null,
     created_date: new Date(),
     show_in_main_page: false,
     currency: 'SAR',
@@ -88,6 +89,9 @@ export function setNewStore(store?: Partial<Store>): Store {
     is_test: false,
     is_verified: false,
     tickets_percent_for_payment: 100,
+    loyalty_enabled: false,
+    loyalty_points_expiration_days: 60,
+    loyalty_points_per_ticket: 1,
     ...store,
   };
 }

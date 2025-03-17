@@ -86,6 +86,9 @@ export type Store = {
   is_test?: boolean; // Test for taketkt devs
   is_active?: boolean;
   tickets_percent_for_payment?: number | Decimal;
+  loyalty_enabled?: boolean;
+  loyalty_points_per_ticket?: number;
+  loyalty_points_expiration_days?: number;
 };
 
 export type Branch = {
@@ -313,7 +316,7 @@ export type Reservation = {
 export type TicketDiscount = {
   id: number;
   name: string;
-  type: 'COUPON';
+  type: 'COUPON' | 'LOYALTY_POINTS';
   amount_percentage: number;
 };
 
@@ -642,4 +645,21 @@ export type Notification = {
   createdDate: Date;
   isRead?: boolean;
   user?: User | null;
+};
+
+export type LoyaltyPoints = {
+  id: number;
+  user_id: string;
+  store_id: string;
+  waiting_id?: string | null;
+  reservation_id?: string | null;
+  points: number;
+  is_used: boolean;
+  created_date: Date;
+  updated_date: Date;
+  expiration_date?: Date | null;
+  user?: User | null;
+  store?: Store | null;
+  waiting?: Waiting | null;
+  reservation?: Reservation | null;
 };
