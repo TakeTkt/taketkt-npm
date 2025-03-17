@@ -221,6 +221,7 @@ export type Waiting = {
   group_id?: number | null;
   payment_id?: string | null;
   coupon_id?: number | null;
+  loyalty_point_id?: number | null;
   name: string;
   email: string;
   country_code?: string;
@@ -270,6 +271,7 @@ export type Reservation = {
   group_id?: number | null;
   payment_id?: string | null;
   coupon_id?: number | null;
+  loyalty_point_id?: number | null;
   name: string;
   email: string;
   country_code?: string;
@@ -651,8 +653,6 @@ export type LoyaltyPoints = {
   id: number;
   user_id: string;
   store_id: string;
-  waiting_id?: string | null;
-  reservation_id?: string | null;
   points: number;
   is_used: boolean;
   created_date: Date;
@@ -660,6 +660,6 @@ export type LoyaltyPoints = {
   expiration_date?: Date | null;
   user?: User | null;
   store?: Store | null;
-  waiting?: Waiting | null;
-  reservation?: Reservation | null;
+  waitings?: Waiting[];
+  reservations?: Reservation[];
 };
