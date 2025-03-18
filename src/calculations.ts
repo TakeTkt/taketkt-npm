@@ -19,9 +19,17 @@ export function calculateItem(item: Ticket | null) {
   if (item) {
     subtotal = toNumber(item.price) * toNumber(item.occupancy);
     const discountPercentage = sumArray(
-      (item.discounts ?? []).map(d => toNumber(d.amount_percentage)),
+      (item.discounts ?? [])
+        .filter(d => d.type === 'COUPON')
+        .map(d => toNumber(d.amount_percentage)),
     );
-    discount = subtotal * (discountPercentage / 100);
+    const loyaltyPointsAmount = sumArray(
+      (item.discounts ?? [])
+        .filter(d => d.type === 'LOYALTY_POINTS')
+        .map(d => toNumber(d.amount)),
+    );
+    const loyaltyDiscount = loyaltyPointsAmount / 10; // 10 points = 1 currency unit
+    discount = subtotal * (discountPercentage / 100) + loyaltyDiscount;
     vat = (subtotal - discount) * (toNumber(item?.vat_percentage) / 100);
     total = subtotal + vat - discount;
   }
