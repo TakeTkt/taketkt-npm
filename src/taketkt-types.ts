@@ -318,9 +318,13 @@ export type Reservation = {
 export type TicketDiscount = {
   id: number;
   name: string;
-  type: 'COUPON' | 'LOYALTY_POINTS';
-  amount_percentage: number;
-};
+} & (
+  | { type: 'COUPON'; amount_percentage: number }
+  | {
+      type: 'LOYALTY_POINTS';
+      amount: number;
+    }
+);
 
 export type BlockedTimes = {
   id: number;
