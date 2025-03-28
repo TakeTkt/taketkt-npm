@@ -16,6 +16,8 @@ import {
   WorkingShifts,
 } from './taketkt-types';
 
+export { awaitable } from './awaitable';
+
 export function convertToDate(date: any) {
   if (date instanceof Date) {
     return date;
