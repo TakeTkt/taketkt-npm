@@ -199,7 +199,9 @@ export type TicketUpdate = {
   type:
     | 'SENT'
     | 'READY'
-    | 'CANCELED'
+    | 'CANCELED' // Canceled by taketkt console
+    | 'AUTO_CANCELED'
+    | 'CANCELED_BY_USER'
     | 'SERVING'
     | 'DONE'
     | 'CONFIRMED'
@@ -207,7 +209,6 @@ export type TicketUpdate = {
     | 'REBOOKED'
     | 'UPDATED';
   time: Date;
-  is_auto_status_change?: boolean;
 };
 
 export type Waiting = {
@@ -245,14 +246,7 @@ export type Waiting = {
   customer_did_not_come?: boolean;
   cancel_note?: string;
   updates?: TicketUpdate[];
-  integrations?: {
-    [integration: string]: {
-      posOrderId: string;
-      posReceiptId: string;
-      posReceiptNumber: string;
-      posDisplayedId: string;
-    };
-  };
+  integrations?: TicketIntegrations;
   vat_percentage?: number;
   duration?: number | null;
   occupancy?: number | null;
@@ -300,19 +294,21 @@ export type Reservation = {
   updates?: TicketUpdate[];
   require_confirmation?: boolean;
   is_confirmed?: boolean;
-  integrations?: {
-    [integration: string]: {
-      posOrderId: string;
-      posReceiptId: string;
-      posReceiptNumber: string;
-      posDisplayedId: string;
-    };
-  };
+  integrations?: TicketIntegrations;
   vat_percentage?: number;
   duration?: number | null;
   occupancy?: number | null;
   source?: 'APP' | 'CONSOLE' | null;
   app_version?: string | null;
+};
+
+export type TicketIntegrations = {
+  [integration: string]: {
+    posOrderId: string;
+    posReceiptId: string;
+    posReceiptNumber: string;
+    posDisplayedId: string;
+  };
 };
 
 export type TicketDiscount = {
