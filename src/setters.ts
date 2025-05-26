@@ -125,6 +125,7 @@ export function setNewBranch(branch?: Partial<Branch> | null): Branch {
     auto_cancel_tickets: false,
     allow_tickets_outside_shifts: false,
     auto_open_branch_after_midnight: true,
+    reservations_slot_interval: 15,
     ...(branch ?? {}),
   };
 }

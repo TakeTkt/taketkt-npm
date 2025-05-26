@@ -125,6 +125,7 @@ export type Branch = {
   is_not_receiving_tickets?: boolean;
   allow_tickets_outside_shifts?: boolean;
   auto_open_branch_after_midnight?: boolean;
+  reservations_slot_interval?: number;
 };
 
 export type Service = {
