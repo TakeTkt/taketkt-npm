@@ -1,5 +1,5 @@
-import { toNumber, absoluteNumber, sumArray } from './utils';
-import type { Ticket } from './taketkt-types';
+import type { ServicePriceModifier, Ticket } from './taketkt-types';
+import { absoluteNumber, convertToDate, sumArray, toNumber } from './utils';
 
 export function getPriceWithVat(price = 0, VAT = 0) {
   if (typeof VAT !== 'number' || VAT <= 0) return price;
@@ -17,7 +17,18 @@ export function calculateItem(item: Ticket | null) {
   let total = 0;
 
   if (item) {
-    subtotal = toNumber(item.price) * toNumber(item.occupancy);
+    const date =
+      'from' in item
+        ? convertToDate(item.from)
+        : convertToDate(item.created_date);
+    const basePrice = toNumber(item.price) || 0;
+    const priceWithRules = calculatePriceWithModifiers(
+      basePrice,
+      date,
+      item.applied_price_modifiers ?? [],
+    );
+    const occupancy = toNumber(item.occupancy) || 1;
+    subtotal = priceWithRules * occupancy;
     const discountPercentage = sumArray(
       (item.discounts ?? [])
         .filter(d => d.type === 'COUPON')
@@ -65,4 +76,46 @@ export function calculateCart(tickets: Ticket[]) {
     discount: absoluteNumber(discount),
     total: absoluteNumber(total),
   };
+}
+
+export function calculatePriceWithModifiers(
+  basePrice: number,
+  date: Date,
+  prices_rules: ServicePriceModifier[],
+): number {
+  const dayOfWeek = date.getDay(); // 0 (Sun) to 6 (Sat)
+  const dayOfMonth = date.getDate(); // 1 to 31
+  const month = date.getMonth(); // 0 (Jan) to 11
+  const time = date.toTimeString().slice(0, 5); // 'HH:mm'
+
+  // Helper: checks if a time string falls within a given range
+  const isTimeInRange = (from: string, to: string): boolean => {
+    return from <= time && time <= to;
+  };
+
+  // Filter applicable rules
+  const applicableRules = prices_rules.filter(rule => {
+    if (!rule.active) return false;
+
+    const { months, daysOfWeek, daysOfMonth, timeRanges } = rule;
+
+    const matchDayOfWeek = daysOfWeek?.includes(dayOfWeek);
+    const matchDayOfMonth = daysOfMonth?.includes(dayOfMonth);
+    const matchMonth = months?.includes(month);
+    const matchTimeRange = timeRanges?.some(({ from, to }) =>
+      isTimeInRange(from, to),
+    );
+
+    return matchDayOfWeek && matchDayOfMonth && matchMonth && matchTimeRange;
+  });
+
+  // Apply modifiers
+  let finalPrice = toNumber(basePrice);
+
+  for (const rule of applicableRules) {
+    const modifier = rule.price_increase;
+    finalPrice += (modifier / 100) * basePrice;
+  }
+
+  return toNumber(finalPrice);
 }

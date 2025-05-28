@@ -9,8 +9,10 @@ import {
   License,
   Reservation,
   Service,
+  ServiceAddOn,
   ServiceCategory,
   ServiceDuration,
+  ServicePriceModifier,
   Store,
   User,
   UserAccess,
@@ -145,13 +147,14 @@ export function setNewService(
   }
 
   return {
-    service_id: service?.service_id,
+    service_id: service?.service_id as string,
     name_en: '',
     name_ar: '',
     store_id: branch?.store_id ?? '',
     branch_id: branch?.branch_id ?? '',
     branch_number: branch?.branch_number ?? '',
     store_url: branch?.store_url ?? '',
+    category_id: service?.category_id ?? null,
     is_waiting: true,
     is_reservation: false,
     hide: false,
@@ -169,14 +172,16 @@ export function setNewService(
     },
     enable_max_days_ahead: false,
     max_days_ahead: 60,
-    employees: [],
     enable_occupancy: false,
     require_employee: false,
     force_duration_on_waiting: false,
+    employees: [],
     ...obj,
     ...(service ?? {}),
     durations: (service?.durations ?? []).map(setNewDuration),
-  } as Service;
+    addons: (service?.addons ?? []).map(setNewAddOn),
+    price_modifiers: (service?.price_modifiers ?? []).map(setNewPriceModifier),
+  };
 }
 
 export function setNewRole(role?: Partial<EmployeeRole> | null): EmployeeRole {
@@ -329,6 +334,37 @@ export function setNewDuration(
     duration: toNumber(obj?.duration ?? 60),
     price_increase: toNumber(obj?.price_increase ?? 0),
   } as ServiceDuration;
+}
+
+export function setNewAddOn(obj: Partial<ServiceAddOn> | null): ServiceAddOn {
+  return {
+    id: 0,
+    service_id: '',
+    name_en: '',
+    name_ar: '',
+    active: true,
+    duration: 0,
+    is_auto_selected: false,
+    ...(obj ?? {}),
+    price: toNumber(obj?.price ?? 0),
+  };
+}
+
+export function setNewPriceModifier(
+  obj?: Partial<ServicePriceModifier> | null,
+): ServicePriceModifier {
+  return {
+    id: 0,
+    name: '',
+    service_id: '',
+    active: true,
+    daysOfWeek: [],
+    daysOfMonth: [],
+    months: [],
+    timeRanges: [],
+    ...(obj ?? {}),
+    price_increase: toNumber(obj?.price_increase ?? 0),
+  };
 }
 
 export function setLicense(license?: Partial<License> | null): License {

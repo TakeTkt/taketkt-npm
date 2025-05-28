@@ -155,11 +155,37 @@ export type Service = {
   enable_max_days_ahead?: boolean;
   max_days_ahead?: number;
   require_employee?: boolean;
+  enable_occupancy?: boolean;
+  force_duration_on_waiting?: boolean;
+  // additional properties
   integrations?: ServiceIntegrations;
   employees: DashboardUser[];
   durations: ServiceDuration[];
-  enable_occupancy?: boolean;
-  force_duration_on_waiting?: boolean;
+  price_modifiers: ServicePriceModifier[];
+  addons: ServiceAddOn[];
+};
+
+export type ServiceAddOn = {
+  id: number;
+  service_id: string;
+  name_en: string;
+  name_ar: string;
+  price: number;
+  duration: number; // minutes
+  active: boolean;
+  is_auto_selected: boolean;
+};
+
+export type ServicePriceModifier = {
+  id: number;
+  service_id: string;
+  name: string;
+  daysOfWeek: number[]; // 0 (Sunday) to 6 (Saturday)
+  daysOfMonth: number[]; // 1 to 31
+  months: number[]; // 0 (Jan) to 11 (Dec)
+  timeRanges: { from: string; to: string }[]; // HH:mm format
+  price_increase: number; // percentage
+  active: boolean;
 };
 
 export type ServiceDuration = {
@@ -247,10 +273,12 @@ export type Waiting = {
   customer_did_not_come?: boolean;
   cancel_note?: string;
   updates?: TicketUpdate[];
-  integrations?: TicketIntegrations;
   vat_percentage?: number;
-  duration?: number | null;
   occupancy?: number | null;
+  integrations?: TicketIntegrations;
+  duration?: number | null;
+  addons?: ServiceAddOn[];
+  applied_price_modifiers?: ServicePriceModifier[];
   source?: 'APP' | 'CONSOLE' | null;
   app_version?: string | null;
 };
@@ -295,10 +323,12 @@ export type Reservation = {
   updates?: TicketUpdate[];
   require_confirmation?: boolean;
   is_confirmed?: boolean;
-  integrations?: TicketIntegrations;
   vat_percentage?: number;
-  duration?: number | null;
   occupancy?: number | null;
+  integrations?: TicketIntegrations;
+  duration?: number | null;
+  addons?: ServiceAddOn[];
+  applied_price_modifiers?: ServicePriceModifier[];
   source?: 'APP' | 'CONSOLE' | null;
   app_version?: string | null;
 };
