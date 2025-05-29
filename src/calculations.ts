@@ -1,15 +1,25 @@
 import type { ServicePriceModifier, Ticket } from './taketkt-types';
 import { absoluteNumber, convertToDate, sumArray, toNumber } from './utils';
 
+/**
+ * @description Calculates the price of a ticket with VAT included.
+ */
 export function getPriceWithVat(price = 0, VAT = 0) {
   if (typeof VAT !== 'number' || VAT <= 0) return price;
   return toNumber(price) * (1 + VAT / 100);
 }
 
+/**
+ * @description Calculates the total price of a ticket item.
+ */
 export function itemTotalPrice(item: Ticket | null) {
   return calculateItem(item).total;
 }
 
+/**
+ * @description Calculates the subtotal, discount, VAT, and total price of a ticket item.
+ * If the item is null, it returns all values as 0.
+ */
 export function calculateItem(item: Ticket | null) {
   let subtotal = 0;
   let discount = 0;
@@ -53,6 +63,11 @@ export function calculateItem(item: Ticket | null) {
   };
 }
 
+/**
+ * @description Calculates the total price of a cart containing tickets.
+ * It sums up the subtotal, discount, VAT, and total for each ticket in the cart.
+ * If the cart is empty, it returns all values as 0.
+ */
 export function calculateCart(tickets: Ticket[]) {
   const cart = [...(tickets ?? [])];
   let subtotal = 0;
@@ -78,11 +93,38 @@ export function calculateCart(tickets: Ticket[]) {
   };
 }
 
+/**
+ * @description Calculates the subtotal price of a service based on its base price and applicable price modifiers (if exists any).
+ */
 export function calculatePriceWithModifiers(
   basePrice: number,
   date: Date,
-  prices_rules: ServicePriceModifier[],
+  price_modifiers: ServicePriceModifier[],
 ): number {
+  // Filter applicable modifier
+  const applicableModifiers = price_modifiers.filter(modifier =>
+    isPriceModifierEligible(modifier, date),
+  );
+
+  // Apply modifiers
+  let finalPrice = toNumber(basePrice);
+  for (const modifier of applicableModifiers) {
+    const price_increase = modifier.price_increase;
+    finalPrice += (price_increase / 100) * basePrice;
+  }
+
+  return toNumber(finalPrice);
+}
+
+/**
+ * @description Checks if a price modifier is eligible based on the current date.
+ */
+export function isPriceModifierEligible(
+  modifier: ServicePriceModifier,
+  date: Date,
+): boolean {
+  if (!modifier.active) return false;
+
   const dayOfWeek = date.getDay(); // 0 (Sun) to 6 (Sat)
   const dayOfMonth = date.getDate(); // 1 to 31
   const month = date.getMonth(); // 0 (Jan) to 11
@@ -93,29 +135,14 @@ export function calculatePriceWithModifiers(
     return from <= time && time <= to;
   };
 
-  // Filter applicable rules
-  const applicableRules = prices_rules.filter(rule => {
-    if (!rule.active) return false;
+  const { months, daysOfWeek, daysOfMonth, timeRanges } = modifier;
 
-    const { months, daysOfWeek, daysOfMonth, timeRanges } = rule;
+  const matchDayOfWeek = daysOfWeek?.includes(dayOfWeek);
+  const matchDayOfMonth = daysOfMonth?.includes(dayOfMonth);
+  const matchMonth = months?.includes(month);
+  const matchTimeRange = timeRanges?.some(({ from, to }) =>
+    isTimeInRange(from, to),
+  );
 
-    const matchDayOfWeek = daysOfWeek?.includes(dayOfWeek);
-    const matchDayOfMonth = daysOfMonth?.includes(dayOfMonth);
-    const matchMonth = months?.includes(month);
-    const matchTimeRange = timeRanges?.some(({ from, to }) =>
-      isTimeInRange(from, to),
-    );
-
-    return matchDayOfWeek && matchDayOfMonth && matchMonth && matchTimeRange;
-  });
-
-  // Apply modifiers
-  let finalPrice = toNumber(basePrice);
-
-  for (const rule of applicableRules) {
-    const modifier = rule.price_increase;
-    finalPrice += (modifier / 100) * basePrice;
-  }
-
-  return toNumber(finalPrice);
+  return matchDayOfWeek && matchDayOfMonth && matchMonth && matchTimeRange;
 }
