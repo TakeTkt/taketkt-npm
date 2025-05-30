@@ -27,31 +27,9 @@ export function calculateItem(item: Ticket | null) {
   let total = 0;
 
   if (item) {
-    const date =
-      'from' in item
-        ? convertToDate(item.from)
-        : convertToDate(item.created_date);
-    const basePrice = toNumber(item.price) || 0;
-    const priceWithRules = calculatePriceWithModifiers(
-      basePrice,
-      date,
-      item.applied_price_modifiers ?? [],
-    );
-    const occupancy = toNumber(item.occupancy) || 1;
-    subtotal = priceWithRules * occupancy;
-    const discountPercentage = sumArray(
-      (item.discounts ?? [])
-        .filter(d => d.type === 'COUPON')
-        .map(d => toNumber(d.amount_percentage)),
-    );
-    const loyaltyPointsAmount = sumArray(
-      (item.discounts ?? [])
-        .filter(d => d.type === 'LOYALTY_POINTS')
-        .map(d => toNumber(d.amount)),
-    );
-    const loyaltyDiscount = loyaltyPointsAmount / 10; // 10 points = 1 currency unit
-    discount = subtotal * (discountPercentage / 100) + loyaltyDiscount;
-    vat = (subtotal - discount) * (toNumber(item?.vat_percentage) / 100);
+    subtotal = itemSubtotalPrice(item);
+    discount = itemDiscount(item);
+    vat = itemVat(item);
     total = subtotal + vat - discount;
   }
 
@@ -145,4 +123,64 @@ export function isPriceModifierEligible(
   );
 
   return matchDayOfWeek && matchDayOfMonth && matchMonth && matchTimeRange;
+}
+
+// #region separate calcs
+
+/**
+ * @description Calculates the subtotal price of a ticket item, including addons and occupancy.
+ */
+function itemSubtotalPrice(item: Ticket | null) {
+  if (!item) return 0;
+  const date =
+    'from' in item
+      ? convertToDate(item.from)
+      : convertToDate(item.created_date);
+
+  let price = toNumber(item.price);
+  price = calculatePriceWithModifiers(
+    price,
+    date,
+    item.applied_price_modifiers ?? [],
+  );
+
+  if (item.addons && item.addons.length > 0) {
+    price += sumArray(
+      item.addons.map(addon => absoluteNumber(toNumber(addon.price))),
+    );
+  }
+
+  const occupancy = toNumber(item.occupancy) || 1;
+  return price * occupancy;
+}
+
+/**
+ * @description Calculates the discount amount for a ticket item, including coupon and loyalty points discounts.
+ */
+function itemDiscount(item: Ticket | null) {
+  if (!item) return 0;
+  const discountPercentage = sumArray(
+    (item.discounts ?? [])
+      .filter(d => d.type === 'COUPON')
+      .map(d => toNumber(d.amount_percentage)),
+  );
+  const loyaltyPointsAmount = sumArray(
+    (item.discounts ?? [])
+      .filter(d => d.type === 'LOYALTY_POINTS')
+      .map(d => toNumber(d.amount)),
+  );
+  const loyaltyDiscount = loyaltyPointsAmount / 10; // 10 points = 1 currency unit
+  const subtotal = itemSubtotalPrice(item);
+  return subtotal * (discountPercentage / 100) + loyaltyDiscount;
+}
+
+/**
+ * @description Calculates the VAT amount for a ticket item
+ */
+function itemVat(item: Ticket | null) {
+  if (!item) return 0;
+  const vatPercentage = toNumber(item.vat_percentage);
+  const subtotal = itemSubtotalPrice(item);
+  const discount = itemDiscount(item);
+  return (subtotal - discount) * (vatPercentage / 100);
 }
