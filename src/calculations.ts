@@ -122,7 +122,7 @@ export function isPriceModifierEligible(
     isTimeInRange(from, to),
   );
 
-  return matchDayOfWeek && matchDayOfMonth && matchMonth && matchTimeRange;
+  return matchDayOfWeek || matchDayOfMonth || matchMonth || matchTimeRange;
 }
 
 // #region separate calcs
