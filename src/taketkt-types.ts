@@ -157,6 +157,8 @@ export type Service = {
   require_employee?: boolean;
   enable_occupancy?: boolean;
   force_duration_on_waiting?: boolean;
+  is_full_day?: boolean;
+  specified_dates?: Date[];
   // additional properties
   integrations?: ServiceIntegrations;
   employees: DashboardUser[];

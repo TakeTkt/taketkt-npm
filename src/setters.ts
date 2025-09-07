@@ -175,6 +175,8 @@ export function setNewService(
     enable_occupancy: false,
     require_employee: false,
     force_duration_on_waiting: false,
+    is_full_day: false,
+    specified_dates: [],
     employees: [],
     ...obj,
     ...(service ?? {}),
