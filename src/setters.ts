@@ -150,6 +150,8 @@ export function setNewService(
     service_id: service?.service_id as string,
     name_en: '',
     name_ar: '',
+    description_en: '',
+    description_ar: '',
     store_id: branch?.store_id ?? '',
     branch_id: branch?.branch_id ?? '',
     branch_number: branch?.branch_number ?? '',
@@ -347,6 +349,7 @@ export function setNewAddOn(obj: Partial<ServiceAddOn> | null): ServiceAddOn {
     active: true,
     duration: 0,
     is_auto_selected: false,
+    enable_quantity: false,
     ...(obj ?? {}),
     price: toNumber(obj?.price ?? 0),
   };

@@ -132,6 +132,8 @@ export type Service = {
   service_id: string;
   name_en: string;
   name_ar: string;
+  description_en?: string;
+  description_ar?: string;
   store_id: string;
   branch_id: string;
   category_id?: number | null;
@@ -176,6 +178,11 @@ export type ServiceAddOn = {
   duration: number; // minutes
   active: boolean;
   is_auto_selected: boolean;
+  enable_quantity?: boolean;
+};
+
+export type TicketServiceAddOn = ServiceAddOn & {
+  quantity?: number;
 };
 
 export type ServicePriceModifier = {
@@ -279,7 +286,7 @@ export type Waiting = {
   occupancy?: number | null;
   integrations?: TicketIntegrations;
   duration?: number | null;
-  addons?: ServiceAddOn[];
+  addons?: TicketServiceAddOn[];
   applied_price_modifiers?: ServicePriceModifier[];
   source?: 'APP' | 'CONSOLE' | null;
   app_version?: string | null;
@@ -329,7 +336,7 @@ export type Reservation = {
   occupancy?: number | null;
   integrations?: TicketIntegrations;
   duration?: number | null;
-  addons?: ServiceAddOn[];
+  addons?: TicketServiceAddOn[];
   applied_price_modifiers?: ServicePriceModifier[];
   source?: 'APP' | 'CONSOLE' | null;
   app_version?: string | null;

@@ -145,13 +145,27 @@ function itemSubtotalPrice(item: Ticket | null) {
   );
 
   if (item.addons && item.addons.length > 0) {
-    price += sumArray(
-      item.addons.map(addon => absoluteNumber(toNumber(addon.price))),
-    );
+    price += itemAddonsTotalPrice(item);
   }
 
   const occupancy = toNumber(item.occupancy) || 1;
   return price * occupancy;
+}
+
+/**
+ * @description Calculates the total price of addons for a ticket item.
+ */
+function itemAddonsTotalPrice(item: Ticket | null) {
+  if (!item?.addons?.length) return 0;
+  return sumArray(
+    item.addons.map(addon => {
+      let quantity = 1;
+      if (addon.enable_quantity) {
+        quantity = toNumber(addon.quantity) || 1;
+      }
+      return absoluteNumber(toNumber(addon.price)) * quantity;
+    }),
+  );
 }
 
 /**
