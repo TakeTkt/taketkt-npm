@@ -231,19 +231,23 @@ export type Customer = {
   last_visit?: Date;
 };
 
+type TicketUpdateType =
+  | 'SENT'
+  | 'READY'
+  | 'CANCELED' // Canceled by taketkt console
+  | 'AUTO_CANCELED'
+  | 'CANCELED_BY_USER'
+  | 'SERVING'
+  | 'DONE'
+  | 'CONFIRMED'
+  | 'REQUEUED'
+  | 'REBOOKED'
+  | 'UPDATED'
+  | 'USER_CALLED_WILL_BE_LATE'
+  | 'USER_CALLED_WILL_COME_SOON';
+
 export type TicketUpdate = {
-  type:
-    | 'SENT'
-    | 'READY'
-    | 'CANCELED' // Canceled by taketkt console
-    | 'AUTO_CANCELED'
-    | 'CANCELED_BY_USER'
-    | 'SERVING'
-    | 'DONE'
-    | 'CONFIRMED'
-    | 'REQUEUED'
-    | 'REBOOKED'
-    | 'UPDATED';
+  type: TicketUpdateType;
   time: Date;
 };
 
