@@ -175,6 +175,7 @@ export function setNewService(
     enable_max_days_ahead: false,
     max_days_ahead: 60,
     enable_occupancy: false,
+    occupancy_as_slots: true,
     require_employee: false,
     force_duration_on_waiting: false,
     is_full_day: false,
