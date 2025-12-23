@@ -255,6 +255,7 @@ export type TicketUpdate = {
 export type Waiting = {
   waiting_id: string;
   id: number;
+  waiting_number?: string;
   store_id: string;
   branch_id: string;
   service_id: string;
