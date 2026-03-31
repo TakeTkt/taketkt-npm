@@ -159,6 +159,7 @@ export type Service = {
   require_employee?: boolean;
   enable_occupancy?: boolean;
   occupancy_as_slots?: boolean;
+  allow_note?: boolean;
   force_duration_on_waiting?: boolean;
   is_full_day?: boolean;
   specified_dates?: Date[];
