@@ -163,6 +163,7 @@ export type Service = {
   force_duration_on_waiting?: boolean;
   is_full_day?: boolean;
   specified_dates?: Date[];
+  show_no_need_to_wait_message?: boolean;
   // additional properties
   integrations?: ServiceIntegrations;
   employees: DashboardUser[];

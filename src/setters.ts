@@ -177,6 +177,7 @@ export function setNewService(
     enable_occupancy: false,
     occupancy_as_slots: true,
     allow_note: true,
+    show_no_need_to_wait_message: false,
     require_employee: false,
     force_duration_on_waiting: false,
     is_full_day: false,
