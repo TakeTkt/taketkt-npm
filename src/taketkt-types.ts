@@ -558,6 +558,7 @@ export type StoreCategory = {
   id: number;
   name_en: string;
   name_ar: string;
+  icon?: string;
 };
 
 export type FAQ = {
