@@ -1,6 +1,7 @@
 import roles from './roles';
 import {
   Branch,
+  BranchGalleryImage,
   BranchPolicy,
   Coupon,
   Customer,
@@ -129,6 +130,20 @@ export function setNewBranch(branch?: Partial<Branch> | null): Branch {
     auto_open_branch_after_midnight: true,
     reservations_slot_interval: 15,
     ...(branch ?? {}),
+  };
+}
+
+export function setNewBranchGalleryImage(
+  obj?: Partial<BranchGalleryImage> | null,
+  branch?: Branch,
+): BranchGalleryImage {
+  return {
+    id: 0,
+    branch_id: branch?.branch_id ?? '',
+    store_id: branch?.store_id ?? '',
+    url: '',
+    position: 0,
+    ...(obj ?? {}),
   };
 }
 

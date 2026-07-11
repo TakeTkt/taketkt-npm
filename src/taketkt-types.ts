@@ -126,6 +126,15 @@ export type Branch = {
   allow_tickets_outside_shifts?: boolean;
   auto_open_branch_after_midnight?: boolean;
   reservations_slot_interval?: number;
+  gallery?: BranchGalleryImage[];
+};
+
+export type BranchGalleryImage = {
+  id: number;
+  branch_id: string;
+  store_id: string;
+  url: string;
+  position: number;
 };
 
 export type Service = {
