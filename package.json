@@ -29,13 +29,20 @@
   },
   "dependencies": {
     "@date-fns/tz": "^1.2.0",
-    "@prisma/client": "^6.3.1",
-    "@types/lodash.isequalwith": "^4.4.9",
     "date-fns": "^4.1.0",
-    "lodash.isequalwith": "^4.4.0",
-    "rimraf": "^6.0.1"
+    "lodash.isequalwith": "^4.4.0"
+  },
+  "peerDependencies": {
+    "@prisma/client": "^6.3.1"
+  },
+  "peerDependenciesMeta": {
+    "@prisma/client": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "@prisma/client": "^6.3.1",
+    "@types/lodash.isequalwith": "^4.4.9",
     "@types/node": "^22.13.4",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
@@ -45,6 +52,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.8.8",
     "release-it": "^15.11.0",
+    "rimraf": "^6.0.1",
     "ts-loader": "^9.5.2",
     "typescript": "^5.7.3",
     "webpack": "^4.47.0",
