@@ -47,6 +47,9 @@ jobs:
 
       - uses: actions/checkout@v4
         if: steps.pr.outputs.release == 'true'
+        with:
+          # Deploy key (write access, in the main ruleset bypass list) so the version bump can be pushed to protected main
+          ssh-key: ${{ secrets.RELEASE_DEPLOY_KEY }}
 
       - uses: actions/setup-node@v4
         if: steps.pr.outputs.release == 'true'
