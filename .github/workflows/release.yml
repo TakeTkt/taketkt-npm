@@ -4,10 +4,15 @@ name: Release
 # 1. Finds the merged PR and reads its bump label (bump:major > bump:minor > bump:patch, default patch)
 # 2. Bumps the version in package.json and pushes the commit to main
 # 3. Builds, publishes to npm, then tags and creates a GitHub release
+#
+# Recovery: run this workflow manually (workflow_dispatch) on main to publish the
+# current package.json version without bumping. Publish and release steps are
+# skipped if the version is already on npm / the release already exists.
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: release
@@ -26,6 +31,12 @@ jobs:
       - name: Find merged PR and bump type
         id: pr
         run: |
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            echo "Manual run - publishing current package.json version without bumping."
+            echo "release=true" >> "$GITHUB_OUTPUT"
+            echo "bump=none" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           PR_JSON=$(gh api "repos/$REPO/commits/$SHA/pulls" --jq '.[0]')
           if [ -z "$PR_JSON" ] || [ "$PR_JSON" = "null" ]; then
             echo "No PR associated with $SHA (direct push) - skipping release."
@@ -44,6 +55,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
           SHA: ${{ github.sha }}
+          EVENT: ${{ github.event_name }}
 
       - uses: actions/checkout@v4
         if: steps.pr.outputs.release == 'true'
@@ -73,13 +85,19 @@ jobs:
         id: bump
         if: steps.pr.outputs.release == 'true'
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          npm version "${{ steps.pr.outputs.bump }}" --no-git-tag-version
-          VERSION=$(node -p "require('./package.json').version")
-          git commit -am "chore(release): v$VERSION"
-          git push origin HEAD:main
+          if [ "$BUMP" != "none" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            npm version "$BUMP" --no-git-tag-version
+            VERSION=$(node -p "require('./package.json').version")
+            git commit -am "chore(release): v$VERSION"
+            git push origin HEAD:main
+          else
+            VERSION=$(node -p "require('./package.json').version")
+          fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        env:
+          BUMP: ${{ steps.pr.outputs.bump }}
 
       - name: Build
         if: steps.pr.outputs.release == 'true'
@@ -87,10 +105,24 @@ jobs:
 
       - name: Publish to npm
         if: steps.pr.outputs.release == 'true'
-        run: npm publish --access public # authenticated via OIDC trusted publishing; provenance is automatic
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "$NAME@$VERSION is already on npm - skipping publish."
+          else
+            npm publish --access public # authenticated via OIDC trusted publishing; provenance is automatic
+          fi
+        env:
+          VERSION: ${{ steps.bump.outputs.version }}
 
       - name: Tag and create GitHub release
         if: steps.pr.outputs.release == 'true'
-        run: gh release create "v${{ steps.bump.outputs.version }}" --target "$(git rev-parse HEAD)" --generate-notes
+        run: |
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "Release v$VERSION already exists - skipping."
+          else
+            gh release create "v$VERSION" --target "$(git rev-parse HEAD)" --generate-notes
+          fi
         env:
+          VERSION: ${{ steps.bump.outputs.version }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
