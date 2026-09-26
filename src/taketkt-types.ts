@@ -1,4 +1,4 @@
-import { Decimal } from '@prisma/client/runtime/library';
+import type { Decimal } from '@prisma/client/runtime/library';
 import type { Currency } from './currencies';
 import type { TimeZones } from './timezones';
 import type { PermissionsList } from './permissions';

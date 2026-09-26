@@ -8,6 +8,7 @@
     // "checkJs": true,                       /* Report errors in .js files. */
     // "jsx": "preserve",                     /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */
     "declaration": true /* Generates corresponding '.d.ts' file. */,
+    "skipLibCheck": true /* Skip type checking of declaration files (e.g. @prisma/client's, which use syntax our es5 target can't parse for type-checking purposes). */,
     // "declarationMap": true,                /* Generates a sourcemap for each corresponding '.d.ts' file. */
     // "sourceMap": true,                     /* Generates corresponding '.map' file. */
     // "outFile": "./",                       /* Concatenate and emit output to single file. */
