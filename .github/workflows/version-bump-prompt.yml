@@ -1,0 +1,47 @@
+name: Version bump prompt
+
+# When a PR is opened, the bot asks which version bump to apply on merge.
+# Pick one by adding a label: bump:patch (default), bump:minor or bump:major.
+
+on:
+  pull_request_target:
+    types: [opened, reopened]
+    branches: [main]
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  prompt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure bump labels exist
+        run: |
+          gh label create bump:patch --color 0e8a16 --description "Patch release on merge (default)" --repo "$REPO" || true
+          gh label create bump:minor --color fbca04 --description "Minor release on merge" --repo "$REPO" || true
+          gh label create bump:major --color d93f0b --description "Major release on merge" --repo "$REPO" || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+
+      - name: Comment with version bump options
+        run: |
+          gh pr comment "$PR" --repo "$REPO" --body "$(cat <<'BODY'
+          ### 📦 Version bump
+
+          Which version bump should this PR release when merged?
+
+          Add one of these labels to the PR:
+
+          - `bump:patch`: bug fixes (**default**, used if no label is set)
+          - `bump:minor`: new backwards-compatible features
+          - `bump:major`: breaking changes
+
+          On merge, the version in `package.json` is bumped automatically, pushed to `main`, and published to npm. No other action needed.
+          BODY
+          )"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
