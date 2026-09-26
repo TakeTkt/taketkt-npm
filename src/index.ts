@@ -1,4 +1,5 @@
 export * from './taketkt-types';
+export * from './schema';
 export * from './utils';
 export * from './roles';
 export * from './permissions';
@@ -7,6 +8,7 @@ export * from './payment';
 export * from './calculations';
 
 import * as Types from './taketkt-types';
+import * as Schemas from './schema';
 import * as Utils from './utils';
 import * as Roles from './roles';
 import * as Permissions from './permissions';
@@ -14,7 +16,7 @@ import * as Setters from './setters';
 import * as Payment from './payment';
 import * as Calculations from './calculations';
 
-export { Types, Utils, Roles, Permissions, Setters, Payment, Calculations };
+export { Types, Schemas, Utils, Roles, Permissions, Setters, Payment, Calculations };
 
 // export * as Types from './taketkt-types';
 // export * as Utils from './utils';
