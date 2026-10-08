@@ -126,56 +126,52 @@ export function sortArrayByDate<T>(
   });
 }
 
+/**
+ * Orders tickets: serving, ready, queue (by date), done, canceled.
+ * Each ticket is placed in exactly one bucket, checked in that priority:
+ * canceled > done > serving > ready > queue. Independent filters per bucket
+ * return a ticket twice when its flags overlap (e.g. `done` with
+ * `customer_did_not_come` but not `is_canceled`).
+ */
+function sortTicketsByStatus<T extends Waiting | Reservation>(
+  tickets: T[],
+  queueDateKey: keyof T,
+) {
+  const serving: T[] = [];
+  const ready: T[] = [];
+  const queue: T[] = [];
+  const dones: T[] = [];
+  const canceled: T[] = [];
+
+  tickets.forEach(ticket => {
+    if (ticket.is_canceled || ticket.customer_did_not_come) {
+      canceled.push(ticket);
+    } else if (ticket.done) {
+      dones.push(ticket);
+    } else if (ticket.serving_now) {
+      serving.push(ticket);
+    } else if (ticket.is_ready) {
+      ready.push(ticket);
+    } else {
+      queue.push(ticket);
+    }
+  });
+
+  return [
+    ...serving,
+    ...ready,
+    ...sortArrayByDate(queue, queueDateKey, 'asc'),
+    ...dones,
+    ...canceled,
+  ];
+}
+
 export function sortWaitings(waitings: Waiting[]) {
-  const canceled = waitings.filter(
-    w => w.is_canceled || w.customer_did_not_come,
-  );
-  const dones = waitings.filter(w => w.done && !w.is_canceled);
-  const ready = waitings.filter(
-    w => w.is_ready && !w.done && !w.is_canceled && !w.serving_now,
-  );
-  const serving = waitings.filter(
-    w => w.serving_now && !w.done && !w.is_canceled,
-  );
-  const queue = sortArrayByDate(
-    waitings.filter(
-      w =>
-        !w.is_canceled &&
-        !w.customer_did_not_come &&
-        !w.serving_now &&
-        !w.done &&
-        !w.is_ready,
-    ),
-    'created_date',
-    'asc',
-  );
-  return [...serving, ...ready, ...queue, ...dones, ...canceled];
+  return sortTicketsByStatus(waitings, 'created_date');
 }
 
 export function sortReservations(reservations: Reservation[]) {
-  const canceled = reservations.filter(
-    w => w.is_canceled || w.customer_did_not_come,
-  );
-  const dones = reservations.filter(w => w.done && !w.is_canceled);
-  const ready = reservations.filter(
-    w => w.is_ready && !w.done && !w.is_canceled && !w.serving_now,
-  );
-  const serving = reservations.filter(
-    w => w.serving_now && !w.done && !w.is_canceled,
-  );
-  const queue = sortArrayByDate(
-    reservations.filter(
-      w =>
-        !w.is_canceled &&
-        !w.customer_did_not_come &&
-        !w.serving_now &&
-        !w.done &&
-        !w.is_ready,
-    ),
-    'from',
-    'asc',
-  );
-  return [...serving, ...ready, ...queue, ...dones, ...canceled];
+  return sortTicketsByStatus(reservations, 'from');
 }
 
 export function toFixed(num?: number) {
