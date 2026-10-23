@@ -106,3 +106,19 @@ export type Banner = z.infer<typeof S.bannerSchema>;
 export type Notification = z.infer<typeof S.notificationSchema>;
 
 export type LoyaltyPoints = z.infer<typeof S.loyaltyPointsSchema>;
+
+export type AuthSubjectType = z.infer<typeof S.authSubjectTypeSchema>;
+
+export type ClientKind = z.infer<typeof S.clientKindSchema>;
+
+export type DeviceInfo = z.infer<typeof S.deviceInfoSchema>;
+
+export type AuthTokens = z.infer<typeof S.authTokensSchema>;
+
+export type AuthSession = z.infer<typeof S.authSessionSchema>;
+
+export type PushTokenRegistration = z.infer<typeof S.pushTokenRegistrationSchema>;
+
+export type AuthErrorCode = z.infer<typeof S.authErrorCodeSchema>;
+
+export type AuthError = z.infer<typeof S.authErrorSchema>;

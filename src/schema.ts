@@ -56,6 +56,8 @@ export const userSchema = z.object({
   is_test: z.boolean().optional(), // Test for taketkt devs
   source: z.enum(['APP', 'CONSOLE']).nullable().optional(),
   app_version: z.string().nullable().optional(),
+  last_access_at: z.date().nullable().optional(),
+  /** @deprecated Use the per-device `push_tokens` table via `PUT /auth/push-token`. */
   push_token: z.string().nullable().optional(),
 });
 
@@ -75,6 +77,8 @@ export const dashboardUserSchema = z.object({
   phoneNumberVerified: z.boolean().optional(),
   gender: z.enum(['MALE', 'FEMALE']).optional(),
   is_test: z.boolean().optional(), // Test for taketkt devs
+  last_access_at: z.date().nullable().optional(),
+  /** @deprecated Use the per-device `push_tokens` table via `PUT /auth/push-token`. */
   push_token: z.string().nullable().optional(),
   receive_notifications: z.boolean().optional(),
 });
@@ -749,4 +753,71 @@ export const loyaltyPointsSchema = z.object({
   store: storeSchema.nullable().optional(),
   reservations: z.array(reservationSchema).optional(),
   waitings: z.array(waitingSchema).optional(),
+});
+
+// * Auth sessions: one row per signed-in device, see taketkt-api /auth routes.
+
+export const authSubjectTypeSchema = z.enum(['app', 'dashboard']);
+
+export const clientKindSchema = z.enum([
+  'app_ios',
+  'app_android',
+  'app_web',
+  'dashboard_web',
+  'store_ios',
+  'store_android',
+  'webview',
+]);
+
+export const deviceInfoSchema = z.object({
+  client: clientKindSchema,
+  device_id: z.string().max(128).optional(),
+  device_name: z.string().max(128).optional(),
+  app_version: z.string().max(32).optional(),
+  os_version: z.string().max(64).optional(),
+});
+
+export const authTokensSchema = z.object({
+  access_token: z.string(),
+  /** Seconds until `access_token` expires. */
+  expires_in: z.number(),
+  /** Opaque, single use. Absent for web clients, where it lives in an httpOnly cookie. */
+  refresh_token: z.string().optional(),
+  session_id: z.string(),
+});
+
+export const authSessionSchema = z.object({
+  id: z.string(),
+  client: clientKindSchema,
+  device_name: z.string().nullable().optional(),
+  app_version: z.string().nullable().optional(),
+  os_version: z.string().nullable().optional(),
+  last_ip: z.string().nullable().optional(),
+  last_country: z.string().nullable().optional(),
+  created_at: z.date(),
+  last_used_at: z.date(),
+  /** True for the session that made the request. */
+  current: z.boolean().optional(),
+});
+
+export const pushTokenRegistrationSchema = z.object({
+  token: z.string().min(1).max(512),
+  provider: z.enum(['expo', 'fcm', 'apns']).default('expo'),
+  platform: z.enum(['ios', 'android', 'web']).optional(),
+});
+
+export const authErrorCodeSchema = z.enum([
+  'token_missing',
+  'token_invalid',
+  'token_expired',
+  'session_revoked',
+  'session_expired',
+  'refresh_reused',
+  'otp_required',
+  'rate_limited',
+]);
+
+export const authErrorSchema = z.object({
+  code: authErrorCodeSchema,
+  message: z.string(),
 });
