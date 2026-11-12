@@ -57,8 +57,6 @@ export const userSchema = z.object({
   source: z.enum(['APP', 'CONSOLE']).nullable().optional(),
   app_version: z.string().nullable().optional(),
   last_access_at: z.date().nullable().optional(),
-  /** @deprecated Use the per-device `push_tokens` table via `PUT /auth/push-token`. */
-  push_token: z.string().nullable().optional(),
 });
 
 export const dashboardUserSchema = z.object({
@@ -78,8 +76,6 @@ export const dashboardUserSchema = z.object({
   gender: z.enum(['MALE', 'FEMALE']).optional(),
   is_test: z.boolean().optional(), // Test for taketkt devs
   last_access_at: z.date().nullable().optional(),
-  /** @deprecated Use the per-device `push_tokens` table via `PUT /auth/push-token`. */
-  push_token: z.string().nullable().optional(),
   receive_notifications: z.boolean().optional(),
 });
 
