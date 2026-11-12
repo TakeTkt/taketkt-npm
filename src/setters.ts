@@ -28,7 +28,6 @@ export function setNewUser(user: Partial<User>): User {
     country_code: '',
     phone: '',
     welcomeEmailSent: false,
-    push_token: null,
     ...user,
   } as User;
 }
@@ -47,7 +46,6 @@ export function setNewDashboardUser(
     emailVerified: false,
     phoneNumberVerified: false,
     photo: null,
-    push_token: null,
     ...user,
   } as DashboardUser;
 }
